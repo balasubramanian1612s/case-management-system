@@ -8,42 +8,54 @@ class NavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height * 0.09;
     double width = MediaQuery.of(context).size.width;
+    double sf = MediaQuery.of(context).textScaleFactor;
     return Container(
       height: height,
-      color: Color(0xff12294D),
+      color: const Color(0xff12294D),
       child: Row(
         children: [
-          Container(
-            color: Color(0xffA5B1C5),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: PlatformAwareAssetImage(asset: "logo.png"),
-                ),
-                Text(
-                  "DISTRICT COURT TIRUPUR",
-                  style: TextStyle(
+          ClipPath(
+            clipper: MyClipper(),
+            child: Container(
+              color: const Color.fromRGBO(218, 223, 231, 1),
+              width: width * 0.3,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: width * 0.015,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: PlatformAwareAssetImage(asset: "logo.png"),
+                  ),
+                  SizedBox(
+                    width: width * 0.015,
+                  ),
+                  Text(
+                    "DISTRICT COURT TIRUPUR",
+                    style: TextStyle(
                       color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 23),
-                ),
-                Container(
-                  width: width * 0.01,
-                )
-              ],
+                      fontWeight: FontWeight.bold,
+                      fontSize: sf * 22,
+                    ),
+                  ),
+                  Container(
+                    width: width * 0.01,
+                  )
+                ],
+              ),
             ),
           ),
           Expanded(child: Container()),
           Container(
-            color: Color(0xff12294D),
+            color: const Color(0xff12294D),
             child: Row(
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextButton(
                       onPressed: () {},
-                      child: Text(
+                      child: const Text(
                         "Home",
                         style: TextStyle(
                             color: Colors.white,
@@ -55,7 +67,7 @@ class NavBar extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextButton(
                       onPressed: () {},
-                      child: Text(
+                      child: const Text(
                         "Contact",
                         style: TextStyle(
                             color: Colors.white,
@@ -67,7 +79,7 @@ class NavBar extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextButton(
                       onPressed: () {},
-                      child: Text(
+                      child: const Text(
                         "Register/Login",
                         style: TextStyle(
                             color: Colors.white,
@@ -81,5 +93,22 @@ class NavBar extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class MyClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    path.moveTo(size.width, 0);
+    path.lineTo(size.width - (size.width * 0.075), size.height);
+    path.lineTo(0, size.height);
+    path.lineTo(0, 0);
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return false;
   }
 }
