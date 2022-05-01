@@ -21,9 +21,8 @@ class _HomePageState extends State<HomePage> {
           // Navigation bar of the page.
           const NavBar(),
           // Body of the page.
-          Container(
+          SizedBox(
             height: height,
-            color: Colors.red,
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
