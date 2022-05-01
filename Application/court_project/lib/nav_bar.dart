@@ -1,4 +1,3 @@
-import 'package:court_project/utils/platform_aware_asset_image.dart';
 import 'package:flutter/material.dart';
 
 class NavBar extends StatelessWidget {
@@ -24,9 +23,9 @@ class NavBar extends StatelessWidget {
                   SizedBox(
                     width: width * 0.015,
                   ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: PlatformAwareAssetImage(asset: "logo.png"),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset("logo.png"),
                   ),
                   SizedBox(
                     width: width * 0.015,
