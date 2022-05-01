@@ -1,3 +1,4 @@
+import 'package:court_project/views/case_details/cases_overview.dart';
 import 'package:court_project/views/data_feeding/data_feeding.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.red,
         ),
-        home: DataFeeding());
+        home: CaseOverView());
   }
 }
