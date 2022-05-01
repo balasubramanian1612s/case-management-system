@@ -1,5 +1,4 @@
-import 'package:court_project/views/case_details/cases_overview.dart';
-import 'package:court_project/views/data_feeding/data_feeding.dart';
+import 'package:court_project/pages/login_page/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,10 +11,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.red,
-        ),
-        home: CaseOverView());
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+      ),
+      home: const LoginPage(),
+    );
   }
 }
