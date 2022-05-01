@@ -1,4 +1,4 @@
-import 'package:court_project/nav_bar.dart';
+import 'package:court_project/utils/nav_bar.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
