@@ -1,5 +1,4 @@
-import 'package:court_project/data_feeding.dart';
-import 'package:court_project/login_page.dart';
+import 'package:court_project/views/data_feeding/data_feeding.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,6 +15,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.red,
         ),
-        home: LoginPage());
+        home: DataFeeding());
   }
 }

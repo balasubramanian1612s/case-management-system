@@ -1,4 +1,4 @@
-import 'package:court_project/platform_aware_asset_image.dart';
+import 'package:court_project/utils/platform_aware_asset_image.dart';
 import 'package:flutter/material.dart';
 
 class NavBar extends StatelessWidget {
