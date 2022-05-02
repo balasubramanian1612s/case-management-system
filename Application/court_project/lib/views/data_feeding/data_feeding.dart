@@ -205,119 +205,601 @@ class _MainWidgrtState extends State<MainWidgrt> {
   }
 }
 
-class PetitionerDetails extends StatelessWidget {
+class PetitionerDetails extends StatefulWidget {
   bool? isMobile;
   PetitionerDetails({this.isMobile = false});
 
   @override
+  State<PetitionerDetails> createState() => _PetitionerDetailsState();
+}
+
+class _PetitionerDetailsState extends State<PetitionerDetails> {
+  int? _ratingController;
+
+  @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double width = isMobile! ? 800 : MediaQuery.of(context).size.width;
+    double width = widget.isMobile! ? 1100 : MediaQuery.of(context).size.width;
 
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Petitioner Details",
             style: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
           ),
-          Divider(
+          const Divider(
             color: Colors.black,
           ),
-          Container(
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
             width: width,
             height: 80,
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Name:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
                   width: width * 0.3,
                 ),
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Individual/Dept:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          Container(
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
             width: width,
             height: 80,
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Father/Husband Name: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
                   width: width * 0.3,
                 ),
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Relation: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          Container(
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
             width: width,
             height: 80,
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Age:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
                   width: width * 0.3,
                 ),
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Gender:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 80,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Occupation:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: width * 0.3,
+                ),
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Caste:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 80,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Address: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: width * 0.3,
+                ),
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Education/Qualification:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 80,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Country:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: width * 0.3,
+                ),
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Place/City:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 80,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'State:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: width * 0.3,
+                ),
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'District:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 80,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Pincode: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: width * 0.3,
+                ),
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Mobile Number: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 80,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Email: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: width * 0.3,
+                ),
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Status:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 150,
+            child: Row(children: [
+              SizedBox(
+                width: width * 0.2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Remarks for update:',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Spacer(),
+                    TextField(
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
           ),
         ],
       ),
@@ -325,119 +807,601 @@ class PetitionerDetails extends StatelessWidget {
   }
 }
 
-class RespondentDetails extends StatelessWidget {
+class RespondentDetails extends StatefulWidget {
   bool? isMobile;
   RespondentDetails({this.isMobile = false});
 
   @override
+  State<RespondentDetails> createState() => _RespondentDetailsState();
+}
+
+class _RespondentDetailsState extends State<RespondentDetails> {
+  int? _ratingController;
+
+  @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double width = isMobile! ? 800 : MediaQuery.of(context).size.width;
+    double width = widget.isMobile! ? 1100 : MediaQuery.of(context).size.width;
 
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Respondent Details",
             style: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
           ),
-          Divider(
+          const Divider(
             color: Colors.black,
           ),
-          Container(
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
             width: width,
             height: 80,
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Name:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
                   width: width * 0.3,
                 ),
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Individual/Dept:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          Container(
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
             width: width,
             height: 80,
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Father/Husband Name: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
                   width: width * 0.3,
                 ),
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Relation: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          Container(
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
             width: width,
             height: 80,
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Age:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
                   width: width * 0.3,
                 ),
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Gender:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 80,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Occupation:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: width * 0.3,
+                ),
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Caste:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 80,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Address: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: width * 0.3,
+                ),
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Education/Qualification:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 80,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Country:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: width * 0.3,
+                ),
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Place/City:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 80,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'State:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: width * 0.3,
+                ),
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'District:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 80,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Pincode: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: width * 0.3,
+                ),
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Mobile Number: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 80,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Email: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: width * 0.3,
+                ),
+                SizedBox(
+                  width: width * 0.2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Status:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 150,
+            child: Row(children: [
+              SizedBox(
+                width: width * 0.2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Remarks for update:',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Spacer(),
+                    TextField(
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
           ),
         ],
       ),
@@ -445,118 +1409,226 @@ class RespondentDetails extends StatelessWidget {
   }
 }
 
-class CaseDetails extends StatelessWidget {
+class CaseDetails extends StatefulWidget {
   bool? isMobile;
   CaseDetails({this.isMobile = false});
 
   @override
+  State<CaseDetails> createState() => _CaseDetailsState();
+}
+
+class _CaseDetailsState extends State<CaseDetails> {
+  int? _ratingController;
+
+  @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double width = isMobile! ? 800 : MediaQuery.of(context).size.width;
+    double width = widget.isMobile! ? 1100 : MediaQuery.of(context).size.width;
+
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Case Details",
             style: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
           ),
-          Divider(
+          const Divider(
             color: Colors.black,
           ),
-          Container(
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
             width: width,
             height: 80,
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Case No:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
                   width: width * 0.3,
                 ),
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Case Type:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const Spacer(),
+                      DropdownButtonFormField<int>(
+                        decoration: InputDecoration(
+                            errorStyle: const TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                        value: _ratingController,
+                        items: [1, 2, 3, 4, 5]
+                            .map((label) => DropdownMenuItem(
+                                  child: Text(label.toString()),
+                                  value: label,
+                                ))
+                            .toList(),
+                        hint: const Text('Rating'),
+                        onChanged: (int? value) {
+                          setState(() {
+                            _ratingController = value!;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          Container(
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
             width: width,
             height: 80,
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Diary Numbers: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
                   width: width * 0.3,
                 ),
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Petitioner Adv: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          Container(
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
             width: width,
             height: 80,
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Respondent Adv: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
                   width: width * 0.3,
                 ),
-                Container(
+                SizedBox(
                   width: width * 0.2,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                      hintText: 'Enter Your Name',
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Judgement by: ',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Spacer(),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: width,
+            height: 150,
+            child: Row(children: [
+              SizedBox(
+                width: width * 0.2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Earlier court details if any:',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Spacer(),
+                    TextField(
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
           ),
         ],
       ),
