@@ -18,8 +18,13 @@ class RespondantModel {
   int mobile;
   String status;
   int isPetitioner = 0;
+  String caste;
+  String userId;
+  String caseId;
 
   RespondantModel({
+    required this.userId,
+    required this.caseId,
     required this.name,
     required this.fhName,
     required this.age,
@@ -38,5 +43,31 @@ class RespondantModel {
     required this.mobile,
     required this.status,
     required this.city,
+    required this.caste,
   });
+
+  Map<String, dynamic> toJson() => {
+        "user_id": userId,
+        "case_id": caseId,
+        "person_name": name,
+        "fhname": fhName,
+        "age": age,
+        "occ": occupation,
+        "addr": address,
+        "country": country,
+        "state": state,
+        "pin": pinCode,
+        "email": email,
+        "remarks": remarks,
+        "inddep": inddep,
+        "is_petitioner": isPetitioner,
+        "relation": relation,
+        "gender": gender == "Male" ? "M" : "F",
+        "caste": caste,
+        "edu": edu,
+        "city": city,
+        "district": district,
+        "mobile": mobile,
+        "status": status
+      };
 }
