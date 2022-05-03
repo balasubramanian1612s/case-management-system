@@ -11,60 +11,7 @@ import 'package:flutter/rendering.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
-PetitionerModel? petModel;
-String? deptController;
-String? genderController;
-String? countryController;
-String? stateController;
-String? districtController;
-String? statusController;
-TextEditingController nameController = TextEditingController();
-TextEditingController fnameController = TextEditingController();
-TextEditingController relationController = TextEditingController();
-TextEditingController ageController = TextEditingController();
-TextEditingController occupationController = TextEditingController();
-TextEditingController casteController = TextEditingController();
-TextEditingController addressController = TextEditingController();
-TextEditingController eduController = TextEditingController();
-TextEditingController cityController = TextEditingController();
-TextEditingController pincodeController = TextEditingController();
-TextEditingController mobileController = TextEditingController();
-TextEditingController emailController = TextEditingController();
-TextEditingController remarksController = TextEditingController();
-
-RespondantModel? resModel;
-String? rdeptController;
-String? rgenderController;
-String? rcountryController;
-String? rstateController;
-String? rdistrictController;
-String? rstatusController;
-TextEditingController rnameController = TextEditingController();
-TextEditingController rfnameController = TextEditingController();
-TextEditingController rrelationController = TextEditingController();
-TextEditingController rageController = TextEditingController();
-TextEditingController roccupationController = TextEditingController();
-TextEditingController rcasteController = TextEditingController();
-TextEditingController raddressController = TextEditingController();
-TextEditingController reduController = TextEditingController();
-TextEditingController rcityController = TextEditingController();
-TextEditingController rpincodeController = TextEditingController();
-TextEditingController rmobileController = TextEditingController();
-TextEditingController remailController = TextEditingController();
-TextEditingController rremarksController = TextEditingController();
-
-CaseModel? caseModel;
-String? caseTypeController;
 TextEditingController caseNoController = TextEditingController();
-TextEditingController diaryNoController = TextEditingController();
-TextEditingController petAdvController = TextEditingController();
-TextEditingController resAdvController = TextEditingController();
-TextEditingController judgementController = TextEditingController();
-TextEditingController earlierDetailsController = TextEditingController();
-TextEditingController caseStatusController = TextEditingController();
-TextEditingController caseAgeController = TextEditingController();
-TextEditingController hearingDateController = TextEditingController();
-TextEditingController filingDateController = TextEditingController();
 
 class DataFeeding extends StatelessWidget {
   const DataFeeding({Key? key}) : super(key: key);
@@ -99,7 +46,13 @@ class MainWidget extends StatefulWidget {
 }
 
 class _MainWidgetState extends State<MainWidget> {
-  StreamController<int> _streamController = StreamController<int>();
+  var uuid = const Uuid();
+
+  // Map<Key, PetitionerModel> petitionerList = {};
+  // Map<Key, RespondantModel> respondantList = {};
+
+  List<PetitionerModel> petitionerList = [];
+  List<RespondantModel> respondantList = [];
 
   void uploadData(CaseModel newCase, List<PetitionerModel> petitioners,
       List<RespondantModel> respondants) async {
@@ -131,13 +84,48 @@ class _MainWidgetState extends State<MainWidget> {
     }
   }
 
+  List<Widget> petitionerWidgetList = [];
+  List<Widget> respondantWidgetList = [];
+  CaseModel? caseModel;
+  int petKeyValue = 1;
+  int resKeyValue = 1;
+
+  @override
+  void initState() {
+    petitionerWidgetList = [
+      PetitionerDetails(
+        // key: Key(petKeyValue.toString()),
+        isMobile: widget.isMobile,
+        updatePetitioner: (PetitionerModel pet) {
+          setState(() {
+            // petitionerList.addAll({key_: pet});
+            petitionerList.add(pet);
+          });
+        },
+        uuid: uuid,
+      ),
+    ];
+
+    respondantWidgetList = [
+      RespondentDetails(
+        // key: Key(resKeyValue.toString()),
+        isMobile: widget.isMobile,
+        updateRespondent: (RespondantModel res) {
+          respondantList.add(res);
+          // setState(() {
+          //   respondantList.addAll({key_: res});
+          // });
+        },
+        uuid: uuid,
+      ),
+    ];
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = widget.isMobile! ? 1100 : MediaQuery.of(context).size.width;
-    CaseModel? caseModel;
-    RespondantModel? respondantModel;
-    PetitionerModel? petitionerModel;
 
     return Container(
       height: height,
@@ -155,36 +143,12 @@ class _MainWidgetState extends State<MainWidget> {
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 children: [
-                  Text(
+                  const Text(
                     "Case Details",
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 20),
-                  ),
-                  SizedBox(
-                    height: height * 0.03,
-                  ),
-                  PetitionerDetails(
-                    isMobile: widget.isMobile,
-                    updatePetitioner: (PetitionerModel pet) {
-                      setState(() {
-                        petitionerModel = pet;
-                      });
-                      print("Updated: " + petitionerModel.toString());
-                    },
-                  ),
-                  SizedBox(
-                    height: height * 0.03,
-                  ),
-                  RespondentDetails(
-                    isMobile: widget.isMobile,
-                    updateRespondent: (RespondantModel res) {
-                      setState(() {
-                        respondantModel = res;
-                      });
-                      print("Updated: " + respondantModel.toString());
-                    },
                   ),
                   SizedBox(
                     height: height * 0.03,
@@ -197,6 +161,71 @@ class _MainWidgetState extends State<MainWidget> {
                       });
                       print("Updated: " + caseModel.toString());
                     },
+                    uuid: uuid,
+                  ),
+                  SizedBox(
+                    height: height * 0.03,
+                  ),
+                  ...petitionerWidgetList,
+                  SizedBox(
+                    height: height * 0.03,
+                    child: Row(
+                      children: [
+                        Expanded(child: Container()),
+                        TextButton(
+                            onPressed: () {
+                              print("Added new");
+                              setState(() {
+                                petKeyValue += 1;
+                              });
+                              setState(() {
+                                petitionerWidgetList.add(PetitionerDetails(
+                                  // key: Key(petKeyValue.toString()),
+                                  isMobile: widget.isMobile,
+                                  updatePetitioner: (PetitionerModel pet) {
+                                    setState(() {
+                                      petitionerList.add(pet);
+                                      // petitionerList.addAll({key_: pet});
+                                    });
+                                  },
+                                  uuid: uuid,
+                                ));
+                              });
+
+                              print(petitionerWidgetList.length);
+                            },
+                            child: Text('Add New Petitioner'))
+                      ],
+                    ),
+                  ),
+                  ...respondantWidgetList,
+                  SizedBox(
+                    height: height * 0.03,
+                    child: Row(
+                      children: [
+                        Expanded(child: Container()),
+                        TextButton(
+                            onPressed: () {
+                              setState(() {
+                                resKeyValue += 1;
+                              });
+                              setState(() {
+                                respondantWidgetList.add(RespondentDetails(
+                                  // key: Key(resKeyValue.toString()),
+                                  isMobile: widget.isMobile,
+                                  updateRespondent: (RespondantModel res) {
+                                    setState(() {
+                                      respondantList.add(res);
+                                      // respondantList.addAll({key_: res});
+                                    });
+                                  },
+                                  uuid: uuid,
+                                ));
+                              });
+                            },
+                            child: Text('Add New Respondant'))
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: height * 0.02,
@@ -206,75 +235,10 @@ class _MainWidgetState extends State<MainWidget> {
                       Expanded(child: Container()),
                       InkWell(
                         onTap: () {
-                          var uuid = const Uuid();
-                          int age = int.parse(ageController.text);
-                          int pincode = int.parse(pincodeController.text);
-                          int mobile = int.parse(mobileController.text);
-                          petitionerModel = (PetitionerModel(
-                            caseId: caseNoController.text,
-                            userId: uuid.v4(),
-                            name: nameController.text,
-                            fhName: fnameController.text,
-                            age: age,
-                            occupation: occupationController.text,
-                            address: addressController.text,
-                            country: countryController!,
-                            state: stateController!,
-                            pinCode: pincode,
-                            email: emailController.text,
-                            remarks: remarksController.text,
-                            inddep: deptController == "Individual" ? 0 : 1,
-                            relation: relationController.text,
-                            gender: genderController!,
-                            edu: eduController.text,
-                            district: districtController!,
-                            mobile: mobile,
-                            status: statusController!,
-                            city: cityController.text,
-                            caste: casteController.text,
-                          ));
-
-                          int rage = int.parse(rageController.text);
-                          int rpincode = int.parse(rpincodeController.text);
-                          int rmobile = int.parse(rmobileController.text);
-
-                          respondantModel = (RespondantModel(
-                              caseId: caseNoController.text,
-                              userId: uuid.v4(),
-                              name: rnameController.text,
-                              fhName: rfnameController.text,
-                              age: rage,
-                              occupation: roccupationController.text,
-                              address: raddressController.text,
-                              country: rcountryController!,
-                              state: rstateController!,
-                              pinCode: rpincode,
-                              email: remailController.text,
-                              remarks: rremarksController.text,
-                              inddep: rdeptController == "Individual" ? 0 : 1,
-                              relation: rrelationController.text,
-                              gender: rgenderController!,
-                              edu: reduController.text,
-                              district: rdistrictController!,
-                              mobile: rmobile,
-                              status: rstatusController!,
-                              city: rcityController.text,
-                              caste: casteController.text));
-
-                          caseModel = CaseModel(
-                              caseId: caseNoController.text,
-                              caseType: caseTypeController!,
-                              diaryNo: int.parse(diaryNoController.text),
-                              petAdv: petAdvController.text,
-                              resAdv: resAdvController.text,
-                              filing: filingDateController.text,
-                              judgementBy: judgementController.text,
-                              nextHearing: hearingDateController.text,
-                              age: int.parse(caseAgeController.text),
-                              status: caseStatusController.text);
-                          print("Completed");
-                          uploadData(caseModel!, [petitionerModel!],
-                              [respondantModel!]);
+                          print(petitionerList);
+                          print(respondantList);
+                          uploadData(
+                              caseModel!, petitionerList, respondantList);
                           setState(() {});
                         },
                         child: Container(
@@ -349,16 +313,43 @@ class _MainWidgetState extends State<MainWidget> {
 class PetitionerDetails extends StatefulWidget {
   bool? isMobile;
   Function updatePetitioner;
-  PetitionerDetails({this.isMobile = false, required this.updatePetitioner});
+  Uuid uuid;
+
+  PetitionerDetails({
+    this.isMobile = false,
+    required this.updatePetitioner,
+    required this.uuid,
+  });
 
   @override
   State<PetitionerDetails> createState() => _PetitionerDetailsState();
 }
 
-class _PetitionerDetailsState extends State<PetitionerDetails> {
+class _PetitionerDetailsState extends State<PetitionerDetails>
+    with AutomaticKeepAliveClientMixin<PetitionerDetails> {
   @override
   bool get wantKeepAlive => true;
-  //TODO
+
+  String? deptController;
+  String? genderController;
+  String? countryController;
+  String? stateController;
+  String? districtController;
+  String? statusController;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController fnameController = TextEditingController();
+  TextEditingController relationController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController occupationController = TextEditingController();
+  TextEditingController casteController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController eduController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController pincodeController = TextEditingController();
+  TextEditingController mobileController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController remarksController = TextEditingController();
+  bool isClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -379,6 +370,41 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                     fontSize: 18),
               ),
               Expanded(child: Container()),
+              TextButton(
+                  onPressed: isClicked
+                      ? null
+                      : () {
+                          setState(() {
+                            int age = int.parse(ageController.text);
+                            int pincode = int.parse(pincodeController.text);
+                            int mobile = int.parse(mobileController.text);
+                            widget.updatePetitioner(PetitionerModel(
+                              caseId: caseNoController.text,
+                              userId: widget.uuid.v4(),
+                              name: nameController.text,
+                              fhName: fnameController.text,
+                              age: age,
+                              occupation: occupationController.text,
+                              address: addressController.text,
+                              country: countryController!,
+                              state: stateController!,
+                              pinCode: pincode,
+                              email: emailController.text,
+                              remarks: remarksController.text,
+                              inddep: deptController == "Individual" ? 0 : 1,
+                              relation: relationController.text,
+                              gender: genderController!,
+                              edu: eduController.text,
+                              district: districtController!,
+                              mobile: mobile,
+                              status: statusController!,
+                              city: cityController.text,
+                              caste: casteController.text,
+                            ));
+                            isClicked = true;
+                          });
+                        },
+                  child: Text('Save'))
             ],
           ),
           const Divider(
@@ -977,18 +1003,44 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
 class RespondentDetails extends StatefulWidget {
   bool? isMobile;
   Function updateRespondent;
+  Uuid uuid;
 
-  RespondentDetails({this.isMobile = false, required this.updateRespondent});
+  RespondentDetails({
+    this.isMobile = false,
+    required this.updateRespondent,
+    required this.uuid,
+  });
 
   @override
   State<RespondentDetails> createState() => _RespondentDetailsState();
 }
 
-class _RespondentDetailsState extends State<RespondentDetails> {
+class _RespondentDetailsState extends State<RespondentDetails>
+    with AutomaticKeepAliveClientMixin<RespondentDetails> {
   @override
   bool get wantKeepAlive => true;
-  //TODO
+
   RespondantModel? model;
+  String? rdeptController;
+  String? rgenderController;
+  String? rcountryController;
+  String? rstateController;
+  String? rdistrictController;
+  String? rstatusController;
+  TextEditingController rnameController = TextEditingController();
+  TextEditingController rfnameController = TextEditingController();
+  TextEditingController rrelationController = TextEditingController();
+  TextEditingController rageController = TextEditingController();
+  TextEditingController roccupationController = TextEditingController();
+  TextEditingController rcasteController = TextEditingController();
+  TextEditingController raddressController = TextEditingController();
+  TextEditingController reduController = TextEditingController();
+  TextEditingController rcityController = TextEditingController();
+  TextEditingController rpincodeController = TextEditingController();
+  TextEditingController rmobileController = TextEditingController();
+  TextEditingController remailController = TextEditingController();
+  TextEditingController rremarksController = TextEditingController();
+  bool isClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -1009,6 +1061,41 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                     fontSize: 18),
               ),
               Expanded(child: Container()),
+              TextButton(
+                  onPressed: isClicked
+                      ? null
+                      : () {
+                          setState(() {
+                            int rage = int.parse(rageController.text);
+                            int rpincode = int.parse(rpincodeController.text);
+                            int rmobile = int.parse(rmobileController.text);
+
+                            widget.updateRespondent(RespondantModel(
+                                caseId: caseNoController.text,
+                                userId: widget.uuid.v4(),
+                                name: rnameController.text,
+                                fhName: rfnameController.text,
+                                age: rage,
+                                occupation: roccupationController.text,
+                                address: raddressController.text,
+                                country: rcountryController!,
+                                state: rstateController!,
+                                pinCode: rpincode,
+                                email: remailController.text,
+                                remarks: rremarksController.text,
+                                inddep: rdeptController == "Individual" ? 0 : 1,
+                                relation: rrelationController.text,
+                                gender: rgenderController!,
+                                edu: reduController.text,
+                                district: rdistrictController!,
+                                mobile: rmobile,
+                                status: rstatusController!,
+                                city: rcityController.text,
+                                caste: rcasteController.text));
+                            isClicked = true;
+                          });
+                        },
+                  child: Text('Save'))
             ],
           ),
           const Divider(
@@ -1604,16 +1691,31 @@ class _RespondentDetailsState extends State<RespondentDetails> {
 class CaseDetails extends StatefulWidget {
   bool? isMobile;
   Function updateCase;
+  Uuid uuid;
 
-  CaseDetails({this.isMobile = false, required this.updateCase});
+  CaseDetails(
+      {this.isMobile = false, required this.updateCase, required this.uuid});
 
   @override
   State<CaseDetails> createState() => _CaseDetailsState();
 }
 
-class _CaseDetailsState extends State<CaseDetails> {
+class _CaseDetailsState extends State<CaseDetails>
+    with AutomaticKeepAliveClientMixin<CaseDetails> {
   @override
   bool get wantKeepAlive => true;
+
+  String? caseTypeController;
+  TextEditingController diaryNoController = TextEditingController();
+  TextEditingController petAdvController = TextEditingController();
+  TextEditingController resAdvController = TextEditingController();
+  TextEditingController judgementController = TextEditingController();
+  TextEditingController earlierDetailsController = TextEditingController();
+  TextEditingController caseStatusController = TextEditingController();
+  TextEditingController caseAgeController = TextEditingController();
+  TextEditingController hearingDateController = TextEditingController();
+  TextEditingController filingDateController = TextEditingController();
+  bool isClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -1634,6 +1736,26 @@ class _CaseDetailsState extends State<CaseDetails> {
                     fontSize: 18),
               ),
               Expanded(child: Container()),
+              TextButton(
+                  onPressed: isClicked
+                      ? null
+                      : () {
+                          widget.updateCase(CaseModel(
+                              caseId: caseNoController.text,
+                              caseType: caseTypeController!,
+                              diaryNo: int.parse(diaryNoController.text),
+                              petAdv: petAdvController.text,
+                              resAdv: resAdvController.text,
+                              filing: filingDateController.text,
+                              judgementBy: judgementController.text,
+                              nextHearing: hearingDateController.text,
+                              age: int.parse(caseAgeController.text),
+                              status: caseStatusController.text));
+                          setState(() {
+                            isClicked = true;
+                          });
+                        },
+                  child: Text("Save"))
             ],
           ),
           const Divider(
