@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:court_project/models/case_model.dart';
 import 'package:court_project/models/petitioner_model.dart';
@@ -7,6 +8,8 @@ import 'package:court_project/utils/nav_bar.dart';
 import 'package:court_project/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
 PetitionerModel? petModel;
 String? deptController;
@@ -98,6 +101,36 @@ class MainWidget extends StatefulWidget {
 class _MainWidgetState extends State<MainWidget> {
   StreamController<int> _streamController = StreamController<int>();
 
+  void uploadData(CaseModel newCase, List<PetitionerModel> petitioners,
+      List<RespondantModel> respondants) async {
+    String payload = jsonEncode({
+      "case": newCase,
+      "petitioners": petitioners,
+      "respondents": respondants
+    });
+
+    var response = await http.post(
+      Uri.parse("http://127.0.0.1/cms/add_case.php"),
+      body: payload,
+    );
+
+    var serverResponse = jsonDecode(response.body);
+
+    debugPrint(serverResponse);
+
+    if (serverResponse["success"] == true) {
+      showDialog(
+        context: context,
+        builder: (_) => const AlertDialog(
+          title: Text("Success."),
+          content: Text(
+            "The new case and the corresponding details were uploaded successfully.",
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -173,33 +206,41 @@ class _MainWidgetState extends State<MainWidget> {
                       Expanded(child: Container()),
                       InkWell(
                         onTap: () {
+                          var uuid = const Uuid();
                           int age = int.parse(ageController.text);
                           int pincode = int.parse(pincodeController.text);
                           int mobile = int.parse(mobileController.text);
                           petitionerModel = (PetitionerModel(
-                              name: nameController.text,
-                              fhName: fnameController.text,
-                              age: age,
-                              occupation: occupationController.text,
-                              address: addressController.text,
-                              country: countryController!,
-                              state: stateController!,
-                              pinCode: pincode,
-                              email: emailController.text,
-                              remarks: remarksController.text,
-                              inddep: deptController == "Individual" ? 0 : 1,
-                              relation: relationController.text,
-                              gender: genderController!,
-                              edu: eduController.text,
-                              district: districtController!,
-                              mobile: mobile,
-                              status: statusController!,
-                              city: cityController.text));
+                            caseId: caseNoController.text,
+                            userId: uuid.v4(),
+                            name: nameController.text,
+                            fhName: fnameController.text,
+                            age: age,
+                            occupation: occupationController.text,
+                            address: addressController.text,
+                            country: countryController!,
+                            state: stateController!,
+                            pinCode: pincode,
+                            email: emailController.text,
+                            remarks: remarksController.text,
+                            inddep: deptController == "Individual" ? 0 : 1,
+                            relation: relationController.text,
+                            gender: genderController!,
+                            edu: eduController.text,
+                            district: districtController!,
+                            mobile: mobile,
+                            status: statusController!,
+                            city: cityController.text,
+                            caste: casteController.text,
+                          ));
 
                           int rage = int.parse(rageController.text);
                           int rpincode = int.parse(rpincodeController.text);
                           int rmobile = int.parse(rmobileController.text);
+
                           respondantModel = (RespondantModel(
+                              caseId: caseNoController.text,
+                              userId: uuid.v4(),
                               name: rnameController.text,
                               fhName: rfnameController.text,
                               age: rage,
@@ -217,21 +258,23 @@ class _MainWidgetState extends State<MainWidget> {
                               district: rdistrictController!,
                               mobile: rmobile,
                               status: rstatusController!,
-                              city: rcityController.text));
+                              city: rcityController.text,
+                              caste: casteController.text));
 
                           caseModel = CaseModel(
                               caseId: caseNoController.text,
                               caseType: caseTypeController!,
-                              diaryNo: diaryNoController.text,
+                              diaryNo: int.parse(diaryNoController.text),
                               petAdv: petAdvController.text,
                               resAdv: resAdvController.text,
-                              filing: DateTime.parse(filingDateController.text),
+                              filing: filingDateController.text,
                               judgementBy: judgementController.text,
-                              nextHearing:
-                                  DateTime.parse(hearingDateController.text),
+                              nextHearing: hearingDateController.text,
                               age: int.parse(caseAgeController.text),
                               status: caseStatusController.text);
                           print("Completed");
+                          uploadData(caseModel!, [petitionerModel!],
+                              [respondantModel!]);
                           setState(() {});
                         },
                         child: Container(

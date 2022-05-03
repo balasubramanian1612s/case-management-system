@@ -1,12 +1,12 @@
 class CaseModel {
   String caseId;
   String caseType;
-  String diaryNo;
+  int diaryNo;
   String petAdv;
   String resAdv;
-  DateTime filing;
+  String filing;
   String judgementBy;
-  DateTime nextHearing;
+  String nextHearing;
   int age;
   String status;
 
@@ -22,4 +22,17 @@ class CaseModel {
     required this.age,
     required this.status,
   });
+
+  Map<String, dynamic> toJson() => {
+        "case_id": caseId,
+        "diary_no": diaryNo,
+        "case_type": caseType,
+        "pet_adv": petAdv,
+        "res_adv": resAdv,
+        "filing": filing,
+        "judgement_by": judgementBy,
+        "next_hearing": nextHearing,
+        "age": age,
+        "status": status,
+      };
 }
