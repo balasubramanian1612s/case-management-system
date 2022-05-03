@@ -1,4 +1,4 @@
-class Respondant {
+class RespondantModel {
   String name;
   String fhName;
   int age;
@@ -19,7 +19,7 @@ class Respondant {
   String status;
   int isPetitioner = 0;
 
-  Respondant({
+  RespondantModel({
     required this.name,
     required this.fhName,
     required this.age,

@@ -1,20 +1,75 @@
+import 'dart:async';
+
+import 'package:court_project/models/case_model.dart';
+import 'package:court_project/models/petitioner_model.dart';
+import 'package:court_project/models/respondent_model.dart';
 import 'package:court_project/utils/nav_bar.dart';
 import 'package:court_project/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
+PetitionerModel? petModel;
+String? deptController;
+String? genderController;
+String? countryController;
+String? stateController;
+String? districtController;
+String? statusController;
+TextEditingController nameController = TextEditingController();
+TextEditingController fnameController = TextEditingController();
+TextEditingController relationController = TextEditingController();
+TextEditingController ageController = TextEditingController();
+TextEditingController occupationController = TextEditingController();
+TextEditingController casteController = TextEditingController();
+TextEditingController addressController = TextEditingController();
+TextEditingController eduController = TextEditingController();
+TextEditingController cityController = TextEditingController();
+TextEditingController pincodeController = TextEditingController();
+TextEditingController mobileController = TextEditingController();
+TextEditingController emailController = TextEditingController();
+TextEditingController remarksController = TextEditingController();
+
+RespondantModel? resModel;
+String? rdeptController;
+String? rgenderController;
+String? rcountryController;
+String? rstateController;
+String? rdistrictController;
+String? rstatusController;
+TextEditingController rnameController = TextEditingController();
+TextEditingController rfnameController = TextEditingController();
+TextEditingController rrelationController = TextEditingController();
+TextEditingController rageController = TextEditingController();
+TextEditingController roccupationController = TextEditingController();
+TextEditingController rcasteController = TextEditingController();
+TextEditingController raddressController = TextEditingController();
+TextEditingController reduController = TextEditingController();
+TextEditingController rcityController = TextEditingController();
+TextEditingController rpincodeController = TextEditingController();
+TextEditingController rmobileController = TextEditingController();
+TextEditingController remailController = TextEditingController();
+TextEditingController rremarksController = TextEditingController();
+
+CaseModel? caseModel;
+String? caseTypeController;
+TextEditingController caseNoController = TextEditingController();
+TextEditingController diaryNoController = TextEditingController();
+TextEditingController petAdvController = TextEditingController();
+TextEditingController resAdvController = TextEditingController();
+TextEditingController judgementController = TextEditingController();
+TextEditingController earlierDetailsController = TextEditingController();
+TextEditingController caseStatusController = TextEditingController();
+TextEditingController caseAgeController = TextEditingController();
+TextEditingController hearingDateController = TextEditingController();
+TextEditingController filingDateController = TextEditingController();
 
 class DataFeeding extends StatelessWidget {
   const DataFeeding({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-    final sidebarDecoration = BoxDecoration(
-        gradient: LinearGradient(
-            colors: [Color(0xff00B4DB), Color(0xff0083B0)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter));
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
         body: Responsive(
@@ -22,29 +77,34 @@ class DataFeeding extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Container(
           width: 1100,
-          child: MainWidgrt(
+          child: MainWidget(
             isMobile: true,
           ),
         ),
       ),
-      desktop: MainWidgrt(),
+      desktop: MainWidget(),
     ));
   }
 }
 
-class MainWidgrt extends StatefulWidget {
+class MainWidget extends StatefulWidget {
   bool? isMobile;
-  MainWidgrt({this.isMobile = false});
+  MainWidget({this.isMobile = false});
 
   @override
-  State<MainWidgrt> createState() => _MainWidgrtState();
+  State<MainWidget> createState() => _MainWidgetState();
 }
 
-class _MainWidgrtState extends State<MainWidgrt> {
+class _MainWidgetState extends State<MainWidget> {
+  StreamController<int> _streamController = StreamController<int>();
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = widget.isMobile! ? 1100 : MediaQuery.of(context).size.width;
+    CaseModel? caseModel;
+    RespondantModel? respondantModel;
+    PetitionerModel? petitionerModel;
 
     return Container(
       height: height,
@@ -56,10 +116,11 @@ class _MainWidgrtState extends State<MainWidgrt> {
           Padding(
             padding: EdgeInsets.all(30),
             child: Container(
-              height: height * 0.91 - 60,
+              height: height * 0.91 - 100,
               width: width,
               child: ListView(
-                // crossAxisAlignment: CrossAxisAlignment.start,
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
                 children: [
                   Text(
                     "Case Details",
@@ -73,132 +134,169 @@ class _MainWidgrtState extends State<MainWidgrt> {
                   ),
                   PetitionerDetails(
                     isMobile: widget.isMobile,
+                    updatePetitioner: (PetitionerModel pet) {
+                      setState(() {
+                        petitionerModel = pet;
+                      });
+                      print("Updated: " + petitionerModel.toString());
+                    },
                   ),
                   SizedBox(
                     height: height * 0.03,
                   ),
                   RespondentDetails(
                     isMobile: widget.isMobile,
+                    updateRespondent: (RespondantModel res) {
+                      setState(() {
+                        respondantModel = res;
+                      });
+                      print("Updated: " + respondantModel.toString());
+                    },
                   ),
                   SizedBox(
                     height: height * 0.03,
                   ),
                   CaseDetails(
                     isMobile: widget.isMobile,
-                  ),
-                  SizedBox(
-                    height: height * 0.03,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        width: width * 0.1,
-                        child: Text(
-                          "Case Status",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
-                        ),
-                      ),
-                      Container(
-                        width: width * 0.2,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'User Name',
-                            hintText: 'Enter Your Name',
-                          ),
-                        ),
-                      ),
-                    ],
+                    updateCase: (CaseModel cas) {
+                      setState(() {
+                        caseModel = cas;
+                      });
+                      print("Updated: " + caseModel.toString());
+                    },
                   ),
                   SizedBox(
                     height: height * 0.02,
                   ),
                   Row(
                     children: [
-                      Container(
-                        width: width * 0.1,
-                        child: Text(
-                          "Next-Hearing Date",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
-                        ),
-                      ),
-                      Container(
-                        width: width * 0.2,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'User Name',
-                            hintText: 'Enter Your Name',
+                      Expanded(child: Container()),
+                      InkWell(
+                        onTap: () {
+                          int age = int.parse(ageController.text);
+                          int pincode = int.parse(pincodeController.text);
+                          int mobile = int.parse(mobileController.text);
+                          petitionerModel = (PetitionerModel(
+                              name: nameController.text,
+                              fhName: fnameController.text,
+                              age: age,
+                              occupation: occupationController.text,
+                              address: addressController.text,
+                              country: countryController!,
+                              state: stateController!,
+                              pinCode: pincode,
+                              email: emailController.text,
+                              remarks: remarksController.text,
+                              inddep: deptController == "Individual" ? 0 : 1,
+                              relation: relationController.text,
+                              gender: genderController!,
+                              edu: eduController.text,
+                              district: districtController!,
+                              mobile: mobile,
+                              status: statusController!,
+                              city: cityController.text));
+
+                          int rage = int.parse(rageController.text);
+                          int rpincode = int.parse(rpincodeController.text);
+                          int rmobile = int.parse(rmobileController.text);
+                          respondantModel = (RespondantModel(
+                              name: rnameController.text,
+                              fhName: rfnameController.text,
+                              age: rage,
+                              occupation: roccupationController.text,
+                              address: raddressController.text,
+                              country: rcountryController!,
+                              state: rstateController!,
+                              pinCode: rpincode,
+                              email: remailController.text,
+                              remarks: rremarksController.text,
+                              inddep: rdeptController == "Individual" ? 0 : 1,
+                              relation: rrelationController.text,
+                              gender: rgenderController!,
+                              edu: reduController.text,
+                              district: rdistrictController!,
+                              mobile: rmobile,
+                              status: rstatusController!,
+                              city: rcityController.text));
+
+                          caseModel = CaseModel(
+                              caseId: caseNoController.text,
+                              caseType: caseTypeController!,
+                              diaryNo: diaryNoController.text,
+                              petAdv: petAdvController.text,
+                              resAdv: resAdvController.text,
+                              filing: DateTime.parse(filingDateController.text),
+                              judgementBy: judgementController.text,
+                              nextHearing:
+                                  DateTime.parse(hearingDateController.text),
+                              age: int.parse(caseAgeController.text),
+                              status: caseStatusController.text);
+                          print("Completed");
+                          setState(() {});
+                        },
+                        child: Container(
+                          width: 160,
+                          height: 40,
+                          decoration: BoxDecoration(
+                              color: Color(0xffE8E8E8),
+                              borderRadius: BorderRadius.circular(5)),
+                          alignment: Alignment.center,
+                          child: Row(
+                            children: [
+                              Expanded(child: Container()),
+                              Text(
+                                "Save",
+                                style: TextStyle(
+                                    color: Color(0xff12294C), fontSize: 20),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.save,
+                                color: Color(0xff12294C),
+                              ),
+                              Expanded(child: Container()),
+                            ],
                           ),
                         ),
                       ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        width: 180,
+                        height: 40,
+                        decoration: BoxDecoration(
+                            color: Color(0xff12294C),
+                            borderRadius: BorderRadius.circular(5)),
+                        alignment: Alignment.center,
+                        child: Row(
+                          children: [
+                            Expanded(child: Container()),
+                            Text(
+                              "Complete",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Icon(
+                              Icons.cloud_download,
+                              color: Colors.white,
+                            ),
+                            Expanded(child: Container()),
+                          ],
+                        ),
+                      ),
+                      Expanded(child: Container()),
                     ],
                   ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        width: width * 0.1,
-                        child: Text(
-                          "Case Age",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
-                        ),
-                      ),
-                      Container(
-                        width: width * 0.2,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            fillColor: Colors.grey,
-                            border: OutlineInputBorder(),
-                            labelText: 'User Name',
-                            hintText: 'Enter Your Name',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        width: width * 0.1,
-                        child: Text(
-                          "Filing Date",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
-                        ),
-                      ),
-                      Container(
-                        width: width * 0.2,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'User Name',
-                            hintText: 'Enter Your Name',
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -207,28 +305,38 @@ class _MainWidgrtState extends State<MainWidgrt> {
 
 class PetitionerDetails extends StatefulWidget {
   bool? isMobile;
-  PetitionerDetails({this.isMobile = false});
+  Function updatePetitioner;
+  PetitionerDetails({this.isMobile = false, required this.updatePetitioner});
 
   @override
   State<PetitionerDetails> createState() => _PetitionerDetailsState();
 }
 
 class _PetitionerDetailsState extends State<PetitionerDetails> {
-  int? _ratingController;
+  @override
+  bool get wantKeepAlive => true;
+  //TODO
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = widget.isMobile! ? 1100 : MediaQuery.of(context).size.width;
 
-    return Container(
+    return SizedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Petitioner Details",
-            style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+          Row(
+            children: [
+              const Text(
+                "Petitioner Details",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              ),
+              Expanded(child: Container()),
+            ],
           ),
           const Divider(
             color: Colors.black,
@@ -245,14 +353,18 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'Name:',
                         style: TextStyle(fontSize: 18),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       TextField(
-                        decoration: InputDecoration(
+                        onSubmitted: (value) {
+                          nameController.text = value;
+                        },
+                        controller: nameController,
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -272,23 +384,23 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: deptController,
+                        items: ["Individual", "Dept"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
-                        hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        hint: const Text('Individual/Dept'),
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            deptController = value!;
                           });
                         },
                       ),
@@ -310,13 +422,14 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Father/Husband Name: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: fnameController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -331,13 +444,14 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Relation: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: relationController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -360,13 +474,14 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Age:',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: ageController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -387,23 +502,23 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: genderController,
+                        items: ["Male", "Female"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
-                        hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        hint: const Text('Gender'),
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            genderController = value!;
                           });
                         },
                       ),
@@ -425,13 +540,14 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Occupation:',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: occupationController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -446,13 +562,14 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Caste:',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: casteController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -475,13 +592,14 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Address: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: addressController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -496,13 +614,14 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Education/Qualification:',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: eduController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -531,23 +650,23 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: countryController,
+                        items: ["Country 1", "Country 2"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
-                        hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        hint: const Text('Country'),
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            countryController = value!;
                           });
                         },
                       ),
@@ -561,13 +680,14 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Place/City:',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: cityController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -596,23 +716,23 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: stateController,
+                        items: ["State 1", "State 2"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
-                        hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        hint: const Text('State'),
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            stateController = value!;
                           });
                         },
                       ),
@@ -632,23 +752,23 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: districtController,
+                        items: ["District 1", "District 2"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
-                        hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        hint: const Text('District'),
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            districtController = value!;
                           });
                         },
                       ),
@@ -670,13 +790,14 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Pincode: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: pincodeController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -691,13 +812,14 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Mobile Number: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: mobileController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -720,13 +842,14 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Email: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: emailController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -747,23 +870,23 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: statusController,
+                        items: ["Status 1", "Status 2"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
-                        hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        hint: const Text('Status'),
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            statusController = value!;
                           });
                         },
                       ),
@@ -784,13 +907,14 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
                 width: width * 0.2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'Remarks for update:',
                       style: TextStyle(fontSize: 18),
                     ),
                     Spacer(),
                     TextField(
+                      controller: remarksController,
                       maxLines: 5,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
@@ -809,28 +933,40 @@ class _PetitionerDetailsState extends State<PetitionerDetails> {
 
 class RespondentDetails extends StatefulWidget {
   bool? isMobile;
-  RespondentDetails({this.isMobile = false});
+  Function updateRespondent;
+
+  RespondentDetails({this.isMobile = false, required this.updateRespondent});
 
   @override
   State<RespondentDetails> createState() => _RespondentDetailsState();
 }
 
 class _RespondentDetailsState extends State<RespondentDetails> {
-  int? _ratingController;
+  @override
+  bool get wantKeepAlive => true;
+  //TODO
+  RespondantModel? model;
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = widget.isMobile! ? 1100 : MediaQuery.of(context).size.width;
 
-    return Container(
+    return SizedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Respondent Details",
-            style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+          Row(
+            children: [
+              const Text(
+                "Respondant Details",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              ),
+              Expanded(child: Container()),
+            ],
           ),
           const Divider(
             color: Colors.black,
@@ -847,14 +983,15 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'Name:',
                         style: TextStyle(fontSize: 18),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       TextField(
-                        decoration: InputDecoration(
+                        controller: rnameController,
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -874,23 +1011,23 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: rdeptController,
+                        items: ["Individual", "Dept"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
-                        hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        hint: const Text('Individual/Dept'),
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            rdeptController = value!;
                           });
                         },
                       ),
@@ -912,13 +1049,14 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Father/Husband Name: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: rfnameController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -933,13 +1071,14 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Relation: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: rrelationController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -962,13 +1101,14 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Age:',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: rageController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -989,23 +1129,23 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: rgenderController,
+                        items: ["Male", "Female"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
-                        hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        hint: const Text('Gender'),
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            rgenderController = value!;
                           });
                         },
                       ),
@@ -1027,13 +1167,14 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Occupation:',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: roccupationController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1048,13 +1189,14 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Caste:',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: rcasteController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1077,13 +1219,14 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Address: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: raddressController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1098,13 +1241,14 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Education/Qualification:',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: reduController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1133,23 +1277,23 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: rcountryController,
+                        items: ["Country 1", "Country 2"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
-                        hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        hint: const Text('Country'),
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            rcountryController = value!;
                           });
                         },
                       ),
@@ -1163,13 +1307,14 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Place/City:',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: rcityController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1198,23 +1343,23 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: rstateController,
+                        items: ["State 1", "State 2"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
-                        hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        hint: const Text('State'),
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            rstateController = value!;
                           });
                         },
                       ),
@@ -1234,23 +1379,23 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: rdistrictController,
+                        items: ["District 1", "District 2"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
-                        hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        hint: const Text('District'),
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            rdistrictController = value!;
                           });
                         },
                       ),
@@ -1272,13 +1417,14 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Pincode: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: rpincodeController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1293,13 +1439,14 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Mobile Number: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: rmobileController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1322,13 +1469,14 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Email: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: remailController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1349,23 +1497,23 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: rstatusController,
+                        items: ["Status 1", "Status 2"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
-                        hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        hint: const Text('Status'),
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            rstatusController = value!;
                           });
                         },
                       ),
@@ -1386,13 +1534,14 @@ class _RespondentDetailsState extends State<RespondentDetails> {
                 width: width * 0.2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'Remarks for update:',
                       style: TextStyle(fontSize: 18),
                     ),
                     Spacer(),
                     TextField(
+                      controller: rremarksController,
                       maxLines: 5,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
@@ -1411,14 +1560,17 @@ class _RespondentDetailsState extends State<RespondentDetails> {
 
 class CaseDetails extends StatefulWidget {
   bool? isMobile;
-  CaseDetails({this.isMobile = false});
+  Function updateCase;
+
+  CaseDetails({this.isMobile = false, required this.updateCase});
 
   @override
   State<CaseDetails> createState() => _CaseDetailsState();
 }
 
 class _CaseDetailsState extends State<CaseDetails> {
-  int? _ratingController;
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -1429,10 +1581,17 @@ class _CaseDetailsState extends State<CaseDetails> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Case Details",
-            style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+          Row(
+            children: [
+              const Text(
+                "Case Details",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              ),
+              Expanded(child: Container()),
+            ],
           ),
           const Divider(
             color: Colors.black,
@@ -1449,13 +1608,14 @@ class _CaseDetailsState extends State<CaseDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Case No:',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: caseNoController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1476,23 +1636,23 @@ class _CaseDetailsState extends State<CaseDetails> {
                         style: TextStyle(fontSize: 18),
                       ),
                       const Spacer(),
-                      DropdownButtonFormField<int>(
+                      DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                             errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
-                        value: _ratingController,
-                        items: [1, 2, 3, 4, 5]
+                        value: caseTypeController,
+                        items: ["Civil", "Criminal"]
                             .map((label) => DropdownMenuItem(
                                   child: Text(label.toString()),
                                   value: label,
                                 ))
                             .toList(),
                         hint: const Text('Rating'),
-                        onChanged: (int? value) {
+                        onChanged: (String? value) {
                           setState(() {
-                            _ratingController = value!;
+                            caseTypeController = value!;
                           });
                         },
                       ),
@@ -1514,13 +1674,14 @@ class _CaseDetailsState extends State<CaseDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Diary Numbers: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: diaryNoController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1535,13 +1696,14 @@ class _CaseDetailsState extends State<CaseDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
-                        'Petitioner Adv: ',
+                        'Petitioner Advocate: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: petAdvController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1564,13 +1726,14 @@ class _CaseDetailsState extends State<CaseDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
-                        'Respondent Adv: ',
+                        'Respondent Advocate: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: resAdvController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1585,13 +1748,14 @@ class _CaseDetailsState extends State<CaseDetails> {
                   width: width * 0.2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Judgement by: ',
                         style: TextStyle(fontSize: 18),
                       ),
                       Spacer(),
                       TextField(
+                        controller: judgementController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
@@ -1613,15 +1777,16 @@ class _CaseDetailsState extends State<CaseDetails> {
                 width: width * 0.2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
+                  children: [
+                    const Text(
                       'Earlier court details if any:',
                       style: TextStyle(fontSize: 18),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     TextField(
+                      controller: earlierDetailsController,
                       maxLines: 5,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -1629,6 +1794,149 @@ class _CaseDetailsState extends State<CaseDetails> {
                 ),
               ),
             ]),
+          ),
+          SizedBox(
+            height: height * 0.03,
+          ),
+          Row(
+            children: [
+              Container(
+                width: width * 0.1,
+                child: Text(
+                  "Case Status",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+              ),
+              Container(
+                width: width * 0.2,
+                child: TextField(
+                  controller: caseStatusController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: height * 0.02,
+          ),
+          Row(
+            children: [
+              Container(
+                width: width * 0.1,
+                child: Text(
+                  "Next-Hearing Date",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+              ),
+              Container(
+                width: width * 0.2,
+                child: TextField(
+                  controller: hearingDateController,
+                  onTap: () {
+                    showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2019, 1),
+                        lastDate: DateTime.now(),
+                        builder: (context, picker) {
+                          return Theme(
+                            data: ThemeData.dark().copyWith(
+                              colorScheme: ColorScheme.dark(),
+                            ),
+                            child: picker!,
+                          );
+                        }).then((selectedDate) {
+                      if (selectedDate != null) {
+                        hearingDateController.text = selectedDate.toString();
+                      }
+                    });
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: height * 0.02,
+          ),
+          Row(
+            children: [
+              Container(
+                width: width * 0.1,
+                child: Text(
+                  "Case Age",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+              ),
+              Container(
+                width: width * 0.2,
+                child: TextField(
+                  controller: caseAgeController,
+                  decoration: InputDecoration(
+                    fillColor: Colors.grey,
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: height * 0.02,
+          ),
+          Row(
+            children: [
+              Container(
+                width: width * 0.1,
+                child: Text(
+                  "Filing Date",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+              ),
+              Container(
+                width: width * 0.2,
+                child: TextFormField(
+                  controller: filingDateController,
+                  onTap: () async {
+                    await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2019, 1),
+                        lastDate: DateTime.now(),
+                        builder: (context, picker) {
+                          return Theme(
+                            data: ThemeData.dark().copyWith(
+                              colorScheme: ColorScheme.dark(),
+                            ),
+                            child: picker!,
+                          );
+                        }).then((selectedDate) {
+                      if (selectedDate != null) {
+                        filingDateController.text = selectedDate.toString();
+                      }
+                    });
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

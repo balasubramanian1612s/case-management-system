@@ -1,16 +1,16 @@
-class Case {
+class CaseModel {
   String caseId;
   String caseType;
   String diaryNo;
   String petAdv;
   String resAdv;
-  String filing;
+  DateTime filing;
   String judgementBy;
-  String nextHearing;
+  DateTime nextHearing;
   int age;
   String status;
 
-  Case({
+  CaseModel({
     required this.caseId,
     required this.caseType,
     required this.diaryNo,

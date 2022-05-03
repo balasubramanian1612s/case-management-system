@@ -1,4 +1,4 @@
-class Petitioner {
+class PetitionerModel {
   String name;
   String fhName;
   int age;
@@ -19,7 +19,7 @@ class Petitioner {
   String status;
   int isPetitioner = 1;
 
-  Petitioner({
+  PetitionerModel({
     required this.name,
     required this.fhName,
     required this.age,

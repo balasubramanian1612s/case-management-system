@@ -72,46 +72,6 @@ class _MainWidgetState extends State<MainWidget> {
         timelineType: TimelineType.caseDisposal,
         time: DateTime.now(),
         information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.caseDisposal,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.caseFiled,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.documentUploaded,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.nextHearing,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.caseDisposal,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.caseDisposal,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.caseFiled,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.documentUploaded,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.nextHearing,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.caseDisposal,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
   ];
   @override
   Widget build(BuildContext context) {
