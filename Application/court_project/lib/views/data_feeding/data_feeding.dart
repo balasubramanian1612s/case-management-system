@@ -64,6 +64,7 @@ class _MainWidgetState extends State<MainWidget> {
 
     var response = await http.post(
       Uri.parse("http://127.0.0.1/cms/add_case.php"),
+      headers: {"Access-Control-Allow-Headers": "*"},
       body: payload,
     );
 
