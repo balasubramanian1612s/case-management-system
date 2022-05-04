@@ -1,5 +1,7 @@
+import 'package:court_project/models/complete_case_model.dart';
 import 'package:court_project/utils/nav_bar.dart';
 import 'package:court_project/utils/responsive.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -8,13 +10,20 @@ import 'package:qr_flutter/qr_flutter.dart';
 enum TimelineType { caseFiled, nextHearing, documentUploaded, caseDisposal }
 
 class CaseDetail extends StatefulWidget {
-  const CaseDetail({Key? key}) : super(key: key);
+  final CompleteCaseModel caseDetail;
+  const CaseDetail({Key? key, required this.caseDetail}) : super(key: key);
 
   @override
   State<CaseDetail> createState() => _CaseDetailState();
 }
 
 class _CaseDetailState extends State<CaseDetail> {
+  @override
+  void initState() {
+    super.initState();
+    debugPrint(widget.caseDetail.caseModel.caseId);
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
