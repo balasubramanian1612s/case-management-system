@@ -116,8 +116,6 @@ class _MainWidgetState extends State<MainWidget> {
 
     var serverResponse = jsonDecode(response.body);
 
-    debugPrint(serverResponse);
-
     if (serverResponse["success"] == true) {
       showDialog(
         context: context,
@@ -125,6 +123,16 @@ class _MainWidgetState extends State<MainWidget> {
           title: Text("Success."),
           content: Text(
             "The new case and the corresponding details were uploaded successfully.",
+          ),
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (_) => const AlertDialog(
+          title: Text("Assserion Failed."),
+          content: Text(
+            "Something went wrong. Please try again.",
           ),
         ),
       );
