@@ -1,13 +1,18 @@
+import 'package:court_project/models/case_model.dart';
 import 'package:court_project/models/complete_case_model.dart';
+import 'package:court_project/models/note_model.dart';
+import 'package:court_project/models/petitioner_model.dart';
+import 'package:court_project/models/respondent_model.dart';
+import 'package:court_project/models/timeline_model.dart';
 import 'package:court_project/utils/nav_bar.dart';
 import 'package:court_project/utils/responsive.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-enum TimelineType { caseFiled, nextHearing, documentUploaded, caseDisposal }
+TextStyle commonInfoStyle = const TextStyle(
+    color: Colors.black, fontSize: 17, fontWeight: FontWeight.w600);
 
 class CaseDetail extends StatefulWidget {
   final CompleteCaseModel caseDetail;
@@ -19,71 +24,156 @@ class CaseDetail extends StatefulWidget {
 
 class _CaseDetailState extends State<CaseDetail> {
   @override
-  void initState() {
-    super.initState();
-    debugPrint(widget.caseDetail.caseModel.caseId);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-    const sidebarDecoration = BoxDecoration(
-        gradient: LinearGradient(
-            colors: [Color(0xff00B4DB), Color(0xff0083B0)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter));
-
     return Scaffold(
         body: Responsive(
       mobile: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: SizedBox(
-          width: 1100,
-          child: MainWidget(
-            isMobile: true,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Container(
+            width: 1100,
+            child: MainWidget(
+              isMobile: true,
+              caseDetail: widget.caseDetail,
+            ),
           ),
         ),
       ),
-      desktop: MainWidget(),
+      desktop: MainWidget(
+        caseDetail: widget.caseDetail,
+      ),
     ));
   }
 }
 
 class MainWidget extends StatefulWidget {
   bool? isMobile;
-  MainWidget({this.isMobile = false});
+  final CompleteCaseModel caseDetail;
+  MainWidget({this.isMobile = false, required this.caseDetail});
 
   @override
   State<MainWidget> createState() => _MainWidgetState();
 }
 
 class _MainWidgetState extends State<MainWidget> {
+  TextEditingController hearingDateController = TextEditingController();
   int selectedItem = 0;
-  List timelineList = [
-    TimelineItem(
-        timelineType: TimelineType.caseDisposal,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.caseFiled,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.documentUploaded,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.nextHearing,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
-    TimelineItem(
-        timelineType: TimelineType.caseDisposal,
-        time: DateTime.now(),
-        information: "Petioner files case ....some text"),
+  List<TimelineModel> timelineListSample = [
+    TimelineModel(
+      eventId: "eventId",
+      caseId: "caseId",
+      eventDate: DateTime.now(),
+      eventName: "eventName",
+      eventtype: eventType.caseFiled,
+    ),
+    TimelineModel(
+        eventId: "eventId",
+        caseId: "caseId",
+        eventDate: DateTime.now(),
+        eventName: "eventName",
+        eventtype: eventType.hearing,
+        note: NoteModel(
+            noteId: "noteId",
+            caseId: "caseId",
+            eventId: "eventId",
+            heading: "headingheadingheadingheadingheadingheadingheadingheading",
+            content:
+                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam corrupti similique, accusamus alias ipsa quia hic asperiores maxime eveniet accusantium fugiat, repudiandae magni. Saepe voluptatem eaque cupiditate molestias, alias incidunt. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum doloribus accusantium vitae quas sit assumenda quam ipsa totam, eum optio! Alias odit aliquid eligendi mollitia vitae, quod aut temporibus eveniet!" *
+                    3)),
+    TimelineModel(
+        eventId: "eventId",
+        caseId: "caseId",
+        eventDate: DateTime.now(),
+        eventName: "eventName",
+        eventtype: eventType.hearing,
+        note: NoteModel(
+            noteId: "noteId",
+            caseId: "caseId",
+            eventId: "eventId",
+            heading: "heading",
+            content:
+                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam corrupti similique, accusamus alias ipsa quia hic asperiores maxime eveniet accusantium fugiat, repudiandae magni. Saepe voluptatem eaque cupiditate molestias, alias incidunt. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum doloribus accusantium vitae quas sit assumenda quam ipsa totam, eum optio! Alias odit aliquid eligendi mollitia vitae, quod aut temporibus eveniet!")),
+    TimelineModel(
+        eventId: "eventId",
+        caseId: "caseId",
+        eventDate: DateTime.now(),
+        eventName: "eventName",
+        eventtype: eventType.hearing,
+        note: NoteModel(
+            noteId: "noteId",
+            caseId: "caseId",
+            eventId: "eventId",
+            heading: "heading",
+            content:
+                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam corrupti similique, accusamus alias ipsa quia hic asperiores maxime eveniet accusantium fugiat, repudiandae magni. Saepe voluptatem eaque cupiditate molestias, alias incidunt. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum doloribus accusantium vitae quas sit assumenda quam ipsa totam, eum optio! Alias odit aliquid eligendi mollitia vitae, quod aut temporibus eveniet!")),
+    TimelineModel(
+      eventId: "eventId",
+      caseId: "caseId",
+      eventDate: DateTime.now(),
+      eventName: "eventName",
+      eventtype: eventType.caseDisposed,
+    ),
   ];
+  // List timelineWidgetList = [
+  //   TimelineItem(
+  //       timelineType: eventType.caseFiled,
+  //       time: DateTime.now(),
+  //       information: "Petioner files case ....some text"),
+  //   TimelineItem(
+  //     timelineType: eventType.hearing,
+  //     time: DateTime.now(),
+  //     information: "Petioner files case ....some text",
+  //   ),
+  //   TimelineItem(
+  //       timelineType: eventType.hearing,
+  //       time: DateTime.now(),
+  //       information: "Petioner files case ....some text"),
+  //   TimelineItem(
+  //       timelineType: eventType.hearing,
+  //       time: DateTime.now(),
+  //       information: "Petioner files case ....some text"),
+  //   TimelineItem(
+  //       timelineType: eventType.documentUploaded,
+  //       time: DateTime.now(),
+  //       information: "Petioner files case ....some text"),
+  //   TimelineItem(
+  //       timelineType: eventType.hearing,
+  //       time: DateTime.now(),
+  //       information: "Petioner files case ....some text"),
+  //   TimelineItem(
+  //       timelineType: eventType.hearing,
+  //       time: DateTime.now(),
+  //       information: "Petioner files case ....some text"),
+  //   TimelineItem(
+  //       timelineType: eventType.hearing,
+  //       time: DateTime.now(),
+  //       information: "Petioner files case ....some text"),
+  //   TimelineItem(
+  //       timelineType: eventType.documentUploaded,
+  //       time: DateTime.now(),
+  //       information: "Petioner files case ....some text"),
+  //   TimelineItem(
+  //       timelineType: eventType.hearing,
+  //       time: DateTime.now(),
+  //       information: "Petioner files case ....some text"),
+  //   TimelineItem(
+  //       timelineType: eventType.nextHearing,
+  //       time: DateTime.now(),
+  //       information: "Petioner files case ....some text"),
+  //   TimelineItem(
+  //       timelineType: eventType.caseDisposed,
+  //       time: DateTime.now(),
+  //       information: "Petioner files case ....some text"),
+  // ];
+
+  TimelineModel? selectedModel;
   @override
   Widget build(BuildContext context) {
+    List<PetitionerModel> petitionersList = widget.caseDetail.petitionersList;
+    List<RespondantModel> respondentList = widget.caseDetail.respondantList;
+    CaseModel caseModel = widget.caseDetail.caseModel;
+    List<TimelineModel> timelineList = widget.caseDetail.timelinesList;
     double height = MediaQuery.of(context).size.height;
     double width = widget.isMobile! ? 1100 : MediaQuery.of(context).size.width;
 
@@ -97,14 +187,59 @@ class _MainWidgetState extends State<MainWidget> {
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
             child: Row(
               children: [
-                const Text(
-                  'Case Details',
+                Text(
+                  selectedItem == 2 ? "Case Summary" : 'Case Details',
                   style: TextStyle(
                       color: Color(0xff12294C),
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
                 Expanded(child: Container()),
+                GestureDetector(
+                  onTap: () {
+                    AlertDialog alert = AlertDialog(
+                      title: Text("22/04/2020"),
+                      content: Text(
+                          "Please verify the date you are updating the status."),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedItem = 2;
+                              });
+                              Navigator.pop(context);
+                            },
+                            child: Text('Okay')),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('Cancel')),
+                      ],
+                    );
+
+                    showDialog(context: context, builder: (context) => alert);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: Color(0xff12294C),
+                        border: Border(
+                            bottom: BorderSide(
+                                width: selectedItem == 2 ? 4 : 2,
+                                color: Color(0xffB1B8C2)))),
+                    child: Text(
+                      'Update Case Status',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 30,
+                ),
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -207,15 +342,15 @@ class _MainWidgetState extends State<MainWidget> {
           selectedItem == 1
               ? Container(
                   width: width,
-                  height: height * 0.9 - 80,
+                  height: height * 0.9 - 30 - 70,
                   padding: const EdgeInsets.symmetric(horizontal: 50),
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Case ID:',
-                          style: TextStyle(
+                        Text(
+                          "Case ID: " + caseModel.caseId,
+                          style: const TextStyle(
                               color: Color(0xff12294C),
                               fontSize: 19,
                               fontWeight: FontWeight.bold),
@@ -230,7 +365,7 @@ class _MainWidgetState extends State<MainWidget> {
                         Row(
                           children: [
                             QrImage(
-                              data: "1234567890",
+                              data: caseModel.caseId,
                               version: QrVersions.auto,
                               size: 150.0,
                             ),
@@ -245,15 +380,15 @@ class _MainWidgetState extends State<MainWidget> {
                               child: Row(
                                 children: [
                                   Expanded(child: Container()),
-                                  Text(
+                                  const Text(
                                     "Share",
                                     style: TextStyle(
                                         color: Color(0xff12294C), fontSize: 20),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
-                                  Icon(
+                                  const Icon(
                                     Icons.share,
                                     color: Color(0xff12294C),
                                   ),
@@ -274,15 +409,15 @@ class _MainWidgetState extends State<MainWidget> {
                               child: Row(
                                 children: [
                                   Expanded(child: Container()),
-                                  Text(
+                                  const Text(
                                     "Download",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
-                                  Icon(
+                                  const Icon(
                                     Icons.cloud_download,
                                     color: Colors.white,
                                   ),
@@ -295,49 +430,353 @@ class _MainWidgetState extends State<MainWidget> {
                         const SizedBox(
                           height: 20,
                         ),
-                        PetitionerInfo(),
+                        for (PetitionerModel pet in petitionersList)
+                          Column(
+                            children: [
+                              PetitionerInfo(
+                                model: pet,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
                         const SizedBox(
                           height: 20,
                         ),
-                        RespondentInfo(),
+                        for (RespondantModel res in respondentList)
+                          Column(
+                            children: [
+                              RespondentInfo(
+                                model: res,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
                         const SizedBox(
                           height: 20,
                         ),
-                        CaseInfo(),
+                        CaseInfo(model: caseModel),
                         const SizedBox(
                           height: 20,
                         ),
                       ],
                     ),
                   ))
-              : Container(
-                  width: width,
-                  height: height * 0.9 - 120,
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: SingleChildScrollView(
-                      child: Column(
-                    children: [...timelineList],
-                  )),
-                ),
+              : selectedItem == 0
+                  ? Container(
+                      width: width,
+                      height: height * 0.9 - 120,
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: width * 0.3,
+                            child: SingleChildScrollView(
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children:
+                                        timelineListSample.map<Widget>((e) {
+                                      return TimelineItem(
+                                        model: e,
+                                        selectedItemTrigger:
+                                            (TimelineModel selected) {
+                                          setState(() {
+                                            selectedModel = selected;
+                                          });
+                                        },
+                                      );
+                                    }).toList()
+
+                                    //  [...timelineList.m timelineWidgetList],
+                                    )),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          const VerticalDivider(
+                            color: Colors.black,
+                            thickness: 2,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          selectedModel != null
+                              ? Container(
+                                  width: width < 1150
+                                      ? width * 0.6 - 50
+                                      : width * 0.6,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Hearing Date: " +
+                                            selectedModel!.eventDate.toString(),
+                                        style: const TextStyle(
+                                            color: Color(0xff12294C),
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      const Text(
+                                        "Case Overview: ",
+                                        style: TextStyle(
+                                            color: Color(0xff12294C),
+                                            fontSize: 23,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        child:
+                                            Text(selectedModel!.note!.content,
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                )),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1, color: Colors.black),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Container()
+                        ],
+                      ),
+                    )
+                  : Container(
+                      width: width,
+                      height: height * 0.9 - 90 - 8,
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: SingleChildScrollView(
+                          child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                child: Text(
+                                  "Hearing Date: " + "04/12/2020",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                width: width * 0.1,
+                                child: Text(
+                                  "Next-Hearing Date",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                              ),
+                              Container(
+                                width: width * 0.2,
+                                child: TextField(
+                                  controller: hearingDateController,
+                                  onTap: () {
+                                    showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2019, 1),
+                                        lastDate: DateTime.now(),
+                                        builder: (context, picker) {
+                                          return Theme(
+                                            data: ThemeData.dark().copyWith(
+                                              colorScheme: ColorScheme.dark(),
+                                            ),
+                                            child: picker!,
+                                          );
+                                        }).then((selectedDate) {
+                                      if (selectedDate != null) {
+                                        setState(() {
+                                          hearingDateController.text =
+                                              selectedDate
+                                                  .toString()
+                                                  .substring(0, 10);
+                                        });
+                                      }
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            height: 220,
+                            width: width,
+                            child: Material(
+                              color: Color(0xffE9F0FA),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 40,
+                                    width: width,
+                                    color: Color(0xffCDFFF6),
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'Notes in Short',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18),
+                                          ),
+                                          Expanded(child: Container()),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 180,
+                                    width: width - width * 0.1,
+                                    child: Center(
+                                      child: SizedBox(
+                                        height: 160,
+                                        width: width - 100,
+                                        child: TextField(
+                                          maxLines: 6,
+                                          decoration: InputDecoration(
+                                            hintText: "Add your note here...",
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              borderSide: BorderSide(
+                                                width: 0,
+                                                style: BorderStyle.none,
+                                              ),
+                                            ),
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              color: Color(0xffE9F0FA),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            height: 400,
+                            width: width,
+                            child: Material(
+                              color: Color(0xffE9F0FA),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 40,
+                                    width: width,
+                                    color: Color(0xffFFCE22),
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'Notes',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18),
+                                          ),
+                                          Expanded(child: Container()),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 360,
+                                    width: width - width * 0.1,
+                                    child: Center(
+                                      child: SizedBox(
+                                        height: 340,
+                                        width: width - 100,
+                                        child: TextField(
+                                          maxLines: 16,
+                                          decoration: InputDecoration(
+                                            hintText: "Add your note here...",
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              borderSide: BorderSide(
+                                                width: 0,
+                                                style: BorderStyle.none,
+                                              ),
+                                            ),
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              color: Color(0xffE9F0FA),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                        ],
+                      )),
+                    ),
         ]));
   }
 }
 
 class TimelineItem extends StatelessWidget {
-  TimelineType timelineType;
-  DateTime time;
-  String information;
-  TimelineItem(
-      {required this.timelineType,
-      required this.time,
-      required this.information});
+  // eventType timelineType;
+  // DateTime time;
+  // String information;
+  TimelineModel model;
+  Function selectedItemTrigger;
+  TimelineItem({required this.model, required this.selectedItemTrigger});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Text(
-          DateFormat('dd-MM-yyyy hh:mm').format(time),
+          DateFormat('dd-MM-yyyy hh:mm').format(model.eventDate),
           style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
         ),
         const SizedBox(
@@ -347,24 +786,26 @@ class TimelineItem extends StatelessWidget {
           children: [
             Container(
               height: 30,
-              child: VerticalDivider(
+              child: const VerticalDivider(
                 color: Colors.black,
                 thickness: 2,
               ),
             ),
             SvgPicture.asset(
-              timelineType == TimelineType.nextHearing
+              model.eventtype == eventType.nextHearing
                   ? "assets/next_hearing_indi.svg"
-                  : timelineType == TimelineType.caseFiled
+                  : model.eventtype == eventType.caseFiled
                       ? "assets/case_filed_indi.svg"
-                      : timelineType == TimelineType.caseDisposal
+                      : model.eventtype == eventType.caseDisposed
                           ? "assets/case_disposal_indi.svg"
-                          : "assets/documents_uploaded_indi.svg",
+                          : model.eventtype == eventType.documentUploaded
+                              ? "assets/documents_uploaded_indi.svg"
+                              : "assets/hearing.svg",
               height: 15,
             ),
             Container(
               height: 30,
-              child: VerticalDivider(
+              child: const VerticalDivider(
                 color: Colors.black,
                 thickness: 2,
               ),
@@ -374,9 +815,28 @@ class TimelineItem extends StatelessWidget {
         const SizedBox(
           width: 10,
         ),
-        Text(
-          information,
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+        Row(
+          children: [
+            Text(
+              model.eventtype == eventType.hearing
+                  ? model.note!.heading.length < 28
+                      ? model.note!.heading
+                      : model.note!.heading.substring(0, 24) + "..."
+                  : "Information",
+              softWrap: true,
+              overflow: TextOverflow.fade,
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            ),
+            model.eventtype == eventType.hearing
+                ? TextButton(
+                    onPressed: () {
+                      selectedItemTrigger(model);
+                    },
+                    child: Text('View More...',
+                        style: TextStyle(color: Color(0xff5785CA))),
+                  )
+                : Container()
+          ],
         )
       ],
     );
@@ -385,7 +845,8 @@ class TimelineItem extends StatelessWidget {
 
 class PetitionerInfo extends StatelessWidget {
   bool isMobile;
-  PetitionerInfo({this.isMobile = false});
+  PetitionerModel model;
+  PetitionerInfo({this.isMobile = false, required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -394,7 +855,7 @@ class PetitionerInfo extends StatelessWidget {
 
     return Container(
       width: width,
-      height: 200,
+      height: 350,
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
           color: Color(0xffE8E8E8), borderRadius: BorderRadius.circular(10)),
@@ -419,21 +880,15 @@ class PetitionerInfo extends StatelessWidget {
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Name: ",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Name: " + model.name,
+                  style: commonInfoStyle,
                 ),
               ),
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Date Of Birth:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Individual/Dept: " + model.inddep.toString(),
+                  style: commonInfoStyle,
                 ),
               ),
             ],
@@ -446,21 +901,15 @@ class PetitionerInfo extends StatelessWidget {
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Father/Husband Name:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Father/Husband Name: " + model.fhName,
+                  style: commonInfoStyle,
                 ),
               ),
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Address:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Relation: " + model.relation,
+                  style: commonInfoStyle,
                 ),
               ),
             ],
@@ -473,21 +922,101 @@ class PetitionerInfo extends StatelessWidget {
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Gender:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Age: " + model.age.toString(),
+                  style: commonInfoStyle,
                 ),
               ),
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Age:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Gender: " + model.gender,
+                  style: commonInfoStyle,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            children: [
+              Container(
+                width: width * 0.45,
+                child: Text(
+                  "Occupation: " + model.occupation,
+                  style: commonInfoStyle,
+                ),
+              ),
+              Container(
+                width: width * 0.45,
+                child: Text(
+                  "Caste: " + model.caste,
+                  style: commonInfoStyle,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            children: [
+              Container(
+                width: width * 0.9,
+                child: Text(
+                  "Address: " +
+                      model.address +
+                      ", " +
+                      model.city +
+                      ", " +
+                      model.district +
+                      ", " +
+                      model.state +
+                      ", " +
+                      model.pinCode.toString(),
+                  style: commonInfoStyle,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            children: [
+              Container(
+                width: width * 0.45,
+                child: Text(
+                  "Education Qualification: " + model.edu,
+                  style: commonInfoStyle,
+                ),
+              ),
+              Container(
+                width: width * 0.45,
+                child: Text(
+                  "Mobile Number: " + model.mobile.toString(),
+                  style: commonInfoStyle,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            children: [
+              Container(
+                width: width * 0.45,
+                child: Text(
+                  "Email: " + model.email,
+                  style: commonInfoStyle,
+                ),
+              ),
+              Container(
+                width: width * 0.45,
+                child: Text(
+                  "Status: " + model.status,
+                  style: commonInfoStyle,
                 ),
               ),
             ],
@@ -500,7 +1029,8 @@ class PetitionerInfo extends StatelessWidget {
 
 class RespondentInfo extends StatelessWidget {
   bool isMobile;
-  RespondentInfo({this.isMobile = false});
+  RespondantModel model;
+  RespondentInfo({this.isMobile = false, required this.model});
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -508,7 +1038,7 @@ class RespondentInfo extends StatelessWidget {
 
     return Container(
       width: width,
-      height: 200,
+      height: 350,
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
           color: Color(0xffE8E8E8), borderRadius: BorderRadius.circular(10)),
@@ -533,21 +1063,15 @@ class RespondentInfo extends StatelessWidget {
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Name: ",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Name: " + model.name,
+                  style: commonInfoStyle,
                 ),
               ),
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Date Of Birth:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Individual/Dept: " + model.inddep.toString(),
+                  style: commonInfoStyle,
                 ),
               ),
             ],
@@ -560,21 +1084,15 @@ class RespondentInfo extends StatelessWidget {
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Father/Husband Name:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Father/Husband Name: " + model.fhName,
+                  style: commonInfoStyle,
                 ),
               ),
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Address:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Relation: " + model.relation,
+                  style: commonInfoStyle,
                 ),
               ),
             ],
@@ -587,21 +1105,101 @@ class RespondentInfo extends StatelessWidget {
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Gender:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Age: " + model.age.toString(),
+                  style: commonInfoStyle,
                 ),
               ),
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Age:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Gender: " + model.gender,
+                  style: commonInfoStyle,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            children: [
+              Container(
+                width: width * 0.45,
+                child: Text(
+                  "Occupation: " + model.occupation,
+                  style: commonInfoStyle,
+                ),
+              ),
+              Container(
+                width: width * 0.45,
+                child: Text(
+                  "Caste: " + model.caste,
+                  style: commonInfoStyle,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            children: [
+              Container(
+                width: width * 0.9,
+                child: Text(
+                  "Address: " +
+                      model.address +
+                      ", " +
+                      model.city +
+                      ", " +
+                      model.district +
+                      ", " +
+                      model.state +
+                      ", " +
+                      model.pinCode.toString(),
+                  style: commonInfoStyle,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            children: [
+              Container(
+                width: width * 0.45,
+                child: Text(
+                  "Education Qualification: " + model.edu,
+                  style: commonInfoStyle,
+                ),
+              ),
+              Container(
+                width: width * 0.45,
+                child: Text(
+                  "Mobile Number: " + model.mobile.toString(),
+                  style: commonInfoStyle,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            children: [
+              Container(
+                width: width * 0.45,
+                child: Text(
+                  "Email: " + model.email,
+                  style: commonInfoStyle,
+                ),
+              ),
+              Container(
+                width: width * 0.45,
+                child: Text(
+                  "Status: " + model.status,
+                  style: commonInfoStyle,
                 ),
               ),
             ],
@@ -614,7 +1212,8 @@ class RespondentInfo extends StatelessWidget {
 
 class CaseInfo extends StatelessWidget {
   bool isMobile;
-  CaseInfo({this.isMobile = false});
+  CaseModel model;
+  CaseInfo({this.isMobile = false, required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -648,21 +1247,15 @@ class CaseInfo extends StatelessWidget {
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Case Number: ",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Case Number: " + model.caseId,
+                  style: commonInfoStyle,
                 ),
               ),
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Petitioner’s Advocate:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Petitioner’s Advocate: " + model.petAdv,
+                  style: commonInfoStyle,
                 ),
               ),
             ],
@@ -675,21 +1268,15 @@ class CaseInfo extends StatelessWidget {
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Diary Number:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Diary Number: " + model.diaryNo.toString(),
+                  style: commonInfoStyle,
                 ),
               ),
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Respondent’s Advocate:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Respondent’s Advocate: " + model.resAdv,
+                  style: commonInfoStyle,
                 ),
               ),
             ],
@@ -702,21 +1289,15 @@ class CaseInfo extends StatelessWidget {
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Next Hearing:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Next Hearing: " + model.nextHearing,
+                  style: commonInfoStyle,
                 ),
               ),
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Filing Date:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Filing Date: " + model.filing,
+                  style: commonInfoStyle,
                 ),
               ),
             ],
@@ -729,21 +1310,15 @@ class CaseInfo extends StatelessWidget {
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Judgement By:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Judgement By: " + model.judgementBy,
+                  style: commonInfoStyle,
                 ),
               ),
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Case Age:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Case Age: " + model.age.toString(),
+                  style: commonInfoStyle,
                 ),
               ),
             ],
@@ -756,21 +1331,8 @@ class CaseInfo extends StatelessWidget {
               Container(
                 width: width * 0.45,
                 child: Text(
-                  "Court:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
-              Container(
-                width: width * 0.45,
-                child: Text(
-                  "Status:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600),
+                  "Status: " + model.status,
+                  style: commonInfoStyle,
                 ),
               ),
             ],

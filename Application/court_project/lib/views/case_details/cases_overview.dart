@@ -115,7 +115,11 @@ Future<List<CompleteCaseModel>> getCases() async {
         caseLookup: _caseLookupModel,
         caseModel: _caseModel,
         petitionersList: _petList,
-        respondantList: _resList));
+        respondantList: _resList,
+        //TODO:
+        timelinesList: []
+        //TODO:
+        ));
   }
   return _completeCases;
 }
