@@ -173,7 +173,6 @@ class _MainWidgetState extends State<MainWidget> {
     List<PetitionerModel> petitionersList = widget.caseDetail.petitionersList;
     List<RespondantModel> respondentList = widget.caseDetail.respondantList;
     CaseModel caseModel = widget.caseDetail.caseModel;
-    List<TimelineModel> timelineList = widget.caseDetail.timelinesList;
     double height = MediaQuery.of(context).size.height;
     double width = widget.isMobile! ? 1100 : MediaQuery.of(context).size.width;
 

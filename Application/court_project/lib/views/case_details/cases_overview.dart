@@ -112,14 +112,11 @@ Future<List<CompleteCaseModel>> getCases() async {
         caseAge: _caseModel.age,
         caseDescription: "No description");
     _completeCases.add(CompleteCaseModel(
-        caseLookup: _caseLookupModel,
-        caseModel: _caseModel,
-        petitionersList: _petList,
-        respondantList: _resList,
-        //TODO:
-        timelinesList: []
-        //TODO:
-        ));
+      caseLookup: _caseLookupModel,
+      caseModel: _caseModel,
+      petitionersList: _petList,
+      respondantList: _resList,
+    ));
   }
   return _completeCases;
 }

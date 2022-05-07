@@ -9,12 +9,10 @@ class CompleteCaseModel {
   CaseModel caseModel;
   List<PetitionerModel> petitionersList;
   List<RespondantModel> respondantList;
-  List<TimelineModel> timelinesList;
   CompleteCaseModel({
     required this.caseLookup,
     required this.caseModel,
     required this.petitionersList,
     required this.respondantList,
-    required this.timelinesList,
   });
 }

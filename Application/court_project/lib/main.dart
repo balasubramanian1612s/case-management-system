@@ -25,29 +25,29 @@ class MyApp extends StatelessWidget {
           // DataFeeding()
           CaseDetail(
         caseDetail: CompleteCaseModel(
-            caseLookup: CaseLookup(
-                caseId: "caseId",
-                hearingDate: DateTime.now(),
-                petName: "petName",
-                resName: "resName",
-                caseType: CaseType.civil,
-                filingDate: DateTime.now(),
-                caseAge: 2,
-                caseDescription: "caseDescription"),
-            caseModel: CaseModel(
-                caseId: "sd",
-                caseType: "ds",
-                diaryNo: 2,
-                petAdv: "dsf",
-                resAdv: "resAdv",
-                filing: "22/02/2021",
-                judgementBy: 'judgementBy',
-                nextHearing: "22/02/2021",
-                age: 2,
-                status: "m"),
-            petitionersList: [],
-            respondantList: [],
-            timelinesList: []),
+          caseLookup: CaseLookup(
+              caseId: "caseId",
+              hearingDate: DateTime.now(),
+              petName: "petName",
+              resName: "resName",
+              caseType: CaseType.civil,
+              filingDate: DateTime.now(),
+              caseAge: 2,
+              caseDescription: "caseDescription"),
+          caseModel: CaseModel(
+              caseId: "sd",
+              caseType: "ds",
+              diaryNo: 2,
+              petAdv: "dsf",
+              resAdv: "resAdv",
+              filing: "22/02/2021",
+              judgementBy: 'judgementBy',
+              nextHearing: "22/02/2021",
+              age: 2,
+              status: "m"),
+          petitionersList: [],
+          respondantList: [],
+        ),
       ),
     );
   }
