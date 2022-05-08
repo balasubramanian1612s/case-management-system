@@ -1,3 +1,11 @@
+import 'dart:convert';
+import 'dart:html';
+import 'package:excel/excel.dart';
+import 'package:http/http.dart' as http;
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:court_project/models/case_model.dart';
 import 'package:court_project/models/complete_case_model.dart';
 import 'package:court_project/models/note_model.dart';
@@ -10,9 +18,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 TextStyle commonInfoStyle = const TextStyle(
     color: Colors.black, fontSize: 17, fontWeight: FontWeight.w600);
+
+pw.TextStyle pwcommonInfoStyle = pw.TextStyle();
+
+eventType parseEventType(String type) {
+  if (type == "case_filed") {
+    return eventType.caseFiled;
+  } else if (type == "case_disposed") {
+    return eventType.caseDisposed;
+  } else if (type == "document_uploaded") {
+    return eventType.documentUploaded;
+  } else if (type == "next_hearing") {
+    return eventType.nextHearing;
+  } else if (type == "hearing") {
+    return eventType.hearing;
+  } else {
+    return eventType.hearing;
+  }
+}
 
 class CaseDetail extends StatefulWidget {
   final CompleteCaseModel caseDetail;
@@ -58,121 +85,63 @@ class MainWidget extends StatefulWidget {
 
 class _MainWidgetState extends State<MainWidget> {
   TextEditingController hearingDateController = TextEditingController();
-  int selectedItem = 0;
-  List<TimelineModel> timelineListSample = [
-    TimelineModel(
-      eventId: "eventId",
-      caseId: "caseId",
-      eventDate: DateTime.now(),
-      eventName: "eventName",
-      eventtype: eventType.caseFiled,
-    ),
-    TimelineModel(
-        eventId: "eventId",
-        caseId: "caseId",
-        eventDate: DateTime.now(),
-        eventName: "eventName",
-        eventtype: eventType.hearing,
-        note: NoteModel(
-            noteId: "noteId",
-            caseId: "caseId",
-            eventId: "eventId",
-            heading: "headingheadingheadingheadingheadingheadingheadingheading",
-            content:
-                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam corrupti similique, accusamus alias ipsa quia hic asperiores maxime eveniet accusantium fugiat, repudiandae magni. Saepe voluptatem eaque cupiditate molestias, alias incidunt. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum doloribus accusantium vitae quas sit assumenda quam ipsa totam, eum optio! Alias odit aliquid eligendi mollitia vitae, quod aut temporibus eveniet!" *
-                    3)),
-    TimelineModel(
-        eventId: "eventId",
-        caseId: "caseId",
-        eventDate: DateTime.now(),
-        eventName: "eventName",
-        eventtype: eventType.hearing,
-        note: NoteModel(
-            noteId: "noteId",
-            caseId: "caseId",
-            eventId: "eventId",
-            heading: "heading",
-            content:
-                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam corrupti similique, accusamus alias ipsa quia hic asperiores maxime eveniet accusantium fugiat, repudiandae magni. Saepe voluptatem eaque cupiditate molestias, alias incidunt. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum doloribus accusantium vitae quas sit assumenda quam ipsa totam, eum optio! Alias odit aliquid eligendi mollitia vitae, quod aut temporibus eveniet!")),
-    TimelineModel(
-        eventId: "eventId",
-        caseId: "caseId",
-        eventDate: DateTime.now(),
-        eventName: "eventName",
-        eventtype: eventType.hearing,
-        note: NoteModel(
-            noteId: "noteId",
-            caseId: "caseId",
-            eventId: "eventId",
-            heading: "heading",
-            content:
-                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam corrupti similique, accusamus alias ipsa quia hic asperiores maxime eveniet accusantium fugiat, repudiandae magni. Saepe voluptatem eaque cupiditate molestias, alias incidunt. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum doloribus accusantium vitae quas sit assumenda quam ipsa totam, eum optio! Alias odit aliquid eligendi mollitia vitae, quod aut temporibus eveniet!")),
-    TimelineModel(
-      eventId: "eventId",
-      caseId: "caseId",
-      eventDate: DateTime.now(),
-      eventName: "eventName",
-      eventtype: eventType.caseDisposed,
-    ),
-  ];
-  // List timelineWidgetList = [
-  //   TimelineItem(
-  //       timelineType: eventType.caseFiled,
-  //       time: DateTime.now(),
-  //       information: "Petioner files case ....some text"),
-  //   TimelineItem(
-  //     timelineType: eventType.hearing,
-  //     time: DateTime.now(),
-  //     information: "Petioner files case ....some text",
-  //   ),
-  //   TimelineItem(
-  //       timelineType: eventType.hearing,
-  //       time: DateTime.now(),
-  //       information: "Petioner files case ....some text"),
-  //   TimelineItem(
-  //       timelineType: eventType.hearing,
-  //       time: DateTime.now(),
-  //       information: "Petioner files case ....some text"),
-  //   TimelineItem(
-  //       timelineType: eventType.documentUploaded,
-  //       time: DateTime.now(),
-  //       information: "Petioner files case ....some text"),
-  //   TimelineItem(
-  //       timelineType: eventType.hearing,
-  //       time: DateTime.now(),
-  //       information: "Petioner files case ....some text"),
-  //   TimelineItem(
-  //       timelineType: eventType.hearing,
-  //       time: DateTime.now(),
-  //       information: "Petioner files case ....some text"),
-  //   TimelineItem(
-  //       timelineType: eventType.hearing,
-  //       time: DateTime.now(),
-  //       information: "Petioner files case ....some text"),
-  //   TimelineItem(
-  //       timelineType: eventType.documentUploaded,
-  //       time: DateTime.now(),
-  //       information: "Petioner files case ....some text"),
-  //   TimelineItem(
-  //       timelineType: eventType.hearing,
-  //       time: DateTime.now(),
-  //       information: "Petioner files case ....some text"),
-  //   TimelineItem(
-  //       timelineType: eventType.nextHearing,
-  //       time: DateTime.now(),
-  //       information: "Petioner files case ....some text"),
-  //   TimelineItem(
-  //       timelineType: eventType.caseDisposed,
-  //       time: DateTime.now(),
-  //       information: "Petioner files case ....some text"),
-  // ];
-
+  int selectedItem = 1;
+  List<TimelineModel> timelineListSample = [];
   TimelineModel? selectedModel;
+  void getTimeLine(String caseId) async {
+    List<TimelineModel> _events = [];
+
+    var response = await http.post(
+      Uri.parse("http://127.0.0.1/cms/get_events.php"),
+      body: {"case_id": caseId},
+    );
+
+    var _parsedEventData = jsonDecode(response.body);
+
+    for (int i = 0; i < _parsedEventData.length; i++) {
+      var event = _parsedEventData[i];
+      _events.add(
+        TimelineModel(
+          eventId: event["event_id"],
+          caseId: event["case_id"],
+          eventDate: DateTime.parse(event["event_date"]),
+          eventtype: i == _parsedEventData.length - 1 &&
+                  event["event_type"] == "hearing"
+              ? parseEventType("next_hearing")
+              : parseEventType(event["event_type"]),
+          note: event["notes"] != null
+              ? NoteModel(
+                  noteId: event["notes"]["note_id"],
+                  caseId: event["case_id"],
+                  eventId: event["event_id"],
+                  heading: event["notes"]["heading"],
+                  content: event["notes"]["content"],
+                )
+              : null,
+        ),
+      );
+    }
+
+    setState(() {
+      timelineListSample = _events;
+    });
+  }
+
+  List<PetitionerModel> petitionersList = [];
+  List<RespondantModel> respondentList = [];
+  CaseModel? caseModel;
+
+  @override
+  void initState() {
+    petitionersList = widget.caseDetail.petitionersList;
+    respondentList = widget.caseDetail.respondantList;
+    caseModel = widget.caseDetail.caseModel;
+    getTimeLine("case12345");
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<PetitionerModel> petitionersList = widget.caseDetail.petitionersList;
-    List<RespondantModel> respondentList = widget.caseDetail.respondantList;
-    CaseModel caseModel = widget.caseDetail.caseModel;
     double height = MediaQuery.of(context).size.height;
     double width = widget.isMobile! ? 1100 : MediaQuery.of(context).size.width;
 
@@ -348,7 +317,7 @@ class _MainWidgetState extends State<MainWidget> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Case ID: " + caseModel.caseId,
+                          "Case ID: " + caseModel!.caseId,
                           style: const TextStyle(
                               color: Color(0xff12294C),
                               fontSize: 19,
@@ -364,64 +333,107 @@ class _MainWidgetState extends State<MainWidget> {
                         Row(
                           children: [
                             QrImage(
-                              data: caseModel.caseId,
+                              data: caseModel!.caseId,
                               version: QrVersions.auto,
                               size: 150.0,
                             ),
                             Expanded(child: Container()),
-                            Container(
-                              width: 160,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: Color(0xffE8E8E8),
-                                  borderRadius: BorderRadius.circular(5)),
-                              alignment: Alignment.center,
-                              child: Row(
-                                children: [
-                                  Expanded(child: Container()),
-                                  const Text(
-                                    "Share",
-                                    style: TextStyle(
-                                        color: Color(0xff12294C), fontSize: 20),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  const Icon(
-                                    Icons.share,
-                                    color: Color(0xff12294C),
-                                  ),
-                                  Expanded(child: Container()),
-                                ],
+                            GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                width: 160,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: Color(0xffE8E8E8),
+                                    borderRadius: BorderRadius.circular(5)),
+                                alignment: Alignment.center,
+                                child: Row(
+                                  children: [
+                                    Expanded(child: Container()),
+                                    const Text(
+                                      "Share",
+                                      style: TextStyle(
+                                          color: Color(0xff12294C),
+                                          fontSize: 20),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    const Icon(
+                                      Icons.share,
+                                      color: Color(0xff12294C),
+                                    ),
+                                    Expanded(child: Container()),
+                                  ],
+                                ),
                               ),
                             ),
                             const SizedBox(
                               width: 20,
                             ),
-                            Container(
-                              width: 180,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: Color(0xff12294C),
-                                  borderRadius: BorderRadius.circular(5)),
-                              alignment: Alignment.center,
-                              child: Row(
-                                children: [
-                                  Expanded(child: Container()),
-                                  const Text(
-                                    "Download",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 20),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  const Icon(
-                                    Icons.cloud_download,
-                                    color: Colors.white,
-                                  ),
-                                  Expanded(child: Container()),
-                                ],
+                            GestureDetector(
+                              onTap: () async {
+                                showDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (context) => Dialog(
+                                          child: Container(
+                                              height: 200,
+                                              width: 200,
+                                              alignment: Alignment.center,
+                                              child: Center(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    TextButton(
+                                                        onPressed: () async {
+                                                          await _generatePDF();
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: const Text(
+                                                            "As PDF")),
+                                                    TextButton(
+                                                        onPressed: () async {
+                                                          await _generateExcel();
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: const Text(
+                                                            "As Excel")),
+                                                  ],
+                                                ),
+                                              )),
+                                        ));
+                              },
+                              child: Container(
+                                width: 180,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: Color(0xff12294C),
+                                    borderRadius: BorderRadius.circular(5)),
+                                alignment: Alignment.center,
+                                child: Row(
+                                  children: [
+                                    Expanded(child: Container()),
+                                    const Text(
+                                      "Download",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    const Icon(
+                                      Icons.cloud_download,
+                                      color: Colors.white,
+                                    ),
+                                    Expanded(child: Container()),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -457,7 +469,7 @@ class _MainWidgetState extends State<MainWidget> {
                         const SizedBox(
                           height: 20,
                         ),
-                        CaseInfo(model: caseModel),
+                        CaseInfo(model: caseModel!),
                         const SizedBox(
                           height: 20,
                         ),
@@ -759,6 +771,364 @@ class _MainWidgetState extends State<MainWidget> {
                       )),
                     ),
         ]));
+  }
+
+  _generatePDF() async {
+    CaseModel model = caseModel!;
+    final pdf = pw.Document();
+    pw.MemoryImage img = pw.MemoryImage(
+      (await rootBundle.load('assets/logo.png')).buffer.asUint8List(),
+    );
+    pdf.addPage(
+      pw.MultiPage(header: ((pw.Context context) {
+        return pw.Column(children: [
+          pw.Row(children: [
+            pw.Text(
+              "DISTRICT COURT  TIRUPUR",
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 18),
+            ),
+            pw.Expanded(child: pw.Container()),
+            pw.Image(img, height: 40, width: 40)
+          ]),
+          pw.Divider()
+        ]);
+      }), build: (pw.Context context) {
+        return [
+          pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                "Case Number: " + model.caseId,
+                style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 18,
+                    color: PdfColors.green800),
+              ),
+              pw.SizedBox(
+                height: 10,
+              ),
+              pw.Text(
+                "Case Details",
+                style: pw.TextStyle(fontSize: 16, color: PdfColors.brown),
+              ),
+              pw.SizedBox(
+                height: 10,
+              ),
+              pw.Container(
+                child: pw.Text(
+                  "Case Number: " + model.caseId,
+                  style: pwcommonInfoStyle,
+                ),
+              ),
+              pw.Container(
+                child: pw.Text(
+                  "Petitioner Advocate: " + model.petAdv,
+                  style: pwcommonInfoStyle,
+                ),
+              ),
+              pw.Container(
+                child: pw.Text(
+                  "Diary Number: " + model.diaryNo.toString(),
+                  style: pwcommonInfoStyle,
+                ),
+              ),
+              pw.Container(
+                child: pw.Text(
+                  "Respondent Advocate: " + model.resAdv,
+                  style: pwcommonInfoStyle,
+                ),
+              ),
+              pw.Container(
+                child: pw.Text(
+                  "Next Hearing: " + model.nextHearing,
+                  style: pwcommonInfoStyle,
+                ),
+              ),
+              pw.Container(
+                child: pw.Text(
+                  "Filing Date: " + model.filing,
+                  style: pwcommonInfoStyle,
+                ),
+              ),
+              pw.Container(
+                child: pw.Text(
+                  "Judgement By: " + model.judgementBy,
+                  style: pwcommonInfoStyle,
+                ),
+              ),
+              pw.Container(
+                child: pw.Text(
+                  "Case Age: " + model.age.toString(),
+                  style: pwcommonInfoStyle,
+                ),
+              ),
+              pw.Container(
+                child: pw.Text(
+                  "Status: " + model.status,
+                  style: pwcommonInfoStyle,
+                ),
+              ),
+            ],
+          ),
+          pw.SizedBox(
+            height: 10,
+          ),
+          ...petitionersList
+              .map<pw.Widget>((ele) => pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Text(
+                        "Petitioner Details",
+                        style:
+                            pw.TextStyle(fontSize: 16, color: PdfColors.brown),
+                      ),
+                      pw.SizedBox(
+                        height: 10,
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Name: " + ele.name,
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Individual/Dept: " + ele.inddep.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Father/Husband Name: " + ele.fhName,
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Relation: " + ele.relation.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Age: " + ele.age.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Gender: " + ele.gender.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Occupation: " + ele.occupation.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Caste: " + ele.caste.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Address: " +
+                              ele.address +
+                              ", " +
+                              ele.city +
+                              ", " +
+                              ele.district +
+                              ", " +
+                              ele.state +
+                              ", " +
+                              ele.pinCode.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Education Qualification: " + ele.edu.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Mobile Number: " + ele.mobile.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Email: " + ele.email.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Status: " + ele.status.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ))
+              .toList(),
+          ...respondentList
+              .map<pw.Widget>((ele) => pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Text(
+                        "Respondant Details",
+                        style:
+                            pw.TextStyle(fontSize: 16, color: PdfColors.brown),
+                      ),
+                      pw.SizedBox(
+                        height: 10,
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Name: " + ele.name,
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Individual/Dept: " + ele.inddep.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Father/Husband Name: " + ele.fhName,
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Relation: " + ele.relation.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Age: " + ele.age.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Gender: " + ele.gender.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Occupation: " + ele.occupation.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Caste: " + ele.caste.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Address: " +
+                              ele.address +
+                              ", " +
+                              ele.city +
+                              ", " +
+                              ele.district +
+                              ", " +
+                              ele.state +
+                              ", " +
+                              ele.pinCode.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Education Qualification: " + ele.edu.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Mobile Number: " + ele.mobile.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Email: " + ele.email.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.Container(
+                        child: pw.Text(
+                          "Status: " + ele.status.toString(),
+                          style: pwcommonInfoStyle,
+                        ),
+                      ),
+                      pw.SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ))
+              .toList(),
+        ];
+      }),
+    );
+
+    Uint8List temp = await pdf.save();
+    List<int> intArray = List.from(temp);
+    AnchorElement(
+        href:
+            "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(List.from(intArray))}")
+      ..setAttribute("download", caseModel!.caseId + ".pdf")
+      ..click();
+  }
+
+  _generateExcel() {
+    var excel =
+        Excel.createExcel(); // automatically creates 1 empty sheet: Sheet1
+    Sheet sheetObject = excel['Sheet1'];
+    sheetObject.merge(
+        CellIndex.indexByString("A1"), CellIndex.indexByString("A7"),
+        customValue: "S.no.1");
+    CellStyle cellStyle = CellStyle(verticalAlign: VerticalAlign.Center);
+    var cell = sheetObject.cell(CellIndex.indexByString("A1"));
+    cell.cellStyle = cellStyle;
+    sheetObject.cell(CellIndex.indexByString("B1")).value = "Diary Number";
+    sheetObject.cell(CellIndex.indexByString("C1")).value = caseModel!.diaryNo;
+    sheetObject.cell(CellIndex.indexByString("B2")).value = "Case Number";
+    sheetObject.cell(CellIndex.indexByString("C2")).value = caseModel!.caseId;
+    sheetObject.cell(CellIndex.indexByString("B3")).value = "Petitioner Name";
+    sheetObject.cell(CellIndex.indexByString("C3")).value =
+        petitionersList[0].name;
+    sheetObject.cell(CellIndex.indexByString("B4")).value = "Respondent Name";
+    sheetObject.cell(CellIndex.indexByString("C4")).value =
+        respondentList[0].name;
+    sheetObject.cell(CellIndex.indexByString("B5")).value =
+        "Petitioner's Advocate";
+    sheetObject.cell(CellIndex.indexByString("C5")).value = caseModel!.petAdv;
+    sheetObject.cell(CellIndex.indexByString("B6")).value =
+        "Respondent's Advocate";
+    sheetObject.cell(CellIndex.indexByString("C6")).value = caseModel!.resAdv;
+    sheetObject.cell(CellIndex.indexByString("B7")).value = "Judgment By";
+    sheetObject.cell(CellIndex.indexByString("C7")).value =
+        caseModel!.judgementBy;
+
+    excel.save(
+        fileName:
+            caseModel!.caseId + ".xlsx"); // dynamic values support provided;
   }
 }
 
