@@ -12,7 +12,6 @@ class TimelineModel {
   String eventId;
   String caseId;
   DateTime eventDate;
-  String eventName;
   eventType eventtype;
   NoteModel? note;
 
@@ -20,7 +19,6 @@ class TimelineModel {
     required this.eventId,
     required this.caseId,
     required this.eventDate,
-    required this.eventName,
     required this.eventtype,
     this.note,
   });

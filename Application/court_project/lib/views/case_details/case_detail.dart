@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:court_project/models/case_model.dart';
 import 'package:court_project/models/complete_case_model.dart';
 import 'package:court_project/models/note_model.dart';
@@ -10,6 +12,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:http/http.dart' as http;
+
+eventType parseEventType(String type) {
+  if (type == "case_filed") {
+    return eventType.caseFiled;
+  } else if (type == "case_disposed") {
+    return eventType.caseDisposed;
+  } else if (type == "document_uploaded") {
+    return eventType.documentUploaded;
+  } else if (type == "next_hearing") {
+    return eventType.nextHearing;
+  } else if (type == "hearing") {
+    return eventType.hearing;
+  } else {
+    return eventType.hearing;
+  }
+}
 
 TextStyle commonInfoStyle = const TextStyle(
     color: Colors.black, fontSize: 17, fontWeight: FontWeight.w600);
@@ -59,62 +78,7 @@ class MainWidget extends StatefulWidget {
 class _MainWidgetState extends State<MainWidget> {
   TextEditingController hearingDateController = TextEditingController();
   int selectedItem = 0;
-  List<TimelineModel> timelineListSample = [
-    TimelineModel(
-      eventId: "eventId",
-      caseId: "caseId",
-      eventDate: DateTime.now(),
-      eventName: "eventName",
-      eventtype: eventType.caseFiled,
-    ),
-    TimelineModel(
-        eventId: "eventId",
-        caseId: "caseId",
-        eventDate: DateTime.now(),
-        eventName: "eventName",
-        eventtype: eventType.hearing,
-        note: NoteModel(
-            noteId: "noteId",
-            caseId: "caseId",
-            eventId: "eventId",
-            heading: "headingheadingheadingheadingheadingheadingheadingheading",
-            content:
-                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam corrupti similique, accusamus alias ipsa quia hic asperiores maxime eveniet accusantium fugiat, repudiandae magni. Saepe voluptatem eaque cupiditate molestias, alias incidunt. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum doloribus accusantium vitae quas sit assumenda quam ipsa totam, eum optio! Alias odit aliquid eligendi mollitia vitae, quod aut temporibus eveniet!" *
-                    3)),
-    TimelineModel(
-        eventId: "eventId",
-        caseId: "caseId",
-        eventDate: DateTime.now(),
-        eventName: "eventName",
-        eventtype: eventType.hearing,
-        note: NoteModel(
-            noteId: "noteId",
-            caseId: "caseId",
-            eventId: "eventId",
-            heading: "heading",
-            content:
-                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam corrupti similique, accusamus alias ipsa quia hic asperiores maxime eveniet accusantium fugiat, repudiandae magni. Saepe voluptatem eaque cupiditate molestias, alias incidunt. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum doloribus accusantium vitae quas sit assumenda quam ipsa totam, eum optio! Alias odit aliquid eligendi mollitia vitae, quod aut temporibus eveniet!")),
-    TimelineModel(
-        eventId: "eventId",
-        caseId: "caseId",
-        eventDate: DateTime.now(),
-        eventName: "eventName",
-        eventtype: eventType.hearing,
-        note: NoteModel(
-            noteId: "noteId",
-            caseId: "caseId",
-            eventId: "eventId",
-            heading: "heading",
-            content:
-                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam corrupti similique, accusamus alias ipsa quia hic asperiores maxime eveniet accusantium fugiat, repudiandae magni. Saepe voluptatem eaque cupiditate molestias, alias incidunt. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum doloribus accusantium vitae quas sit assumenda quam ipsa totam, eum optio! Alias odit aliquid eligendi mollitia vitae, quod aut temporibus eveniet!")),
-    TimelineModel(
-      eventId: "eventId",
-      caseId: "caseId",
-      eventDate: DateTime.now(),
-      eventName: "eventName",
-      eventtype: eventType.caseDisposed,
-    ),
-  ];
+  List<TimelineModel> timelineListSample = [];
   // List timelineWidgetList = [
   //   TimelineItem(
   //       timelineType: eventType.caseFiled,
@@ -168,6 +132,52 @@ class _MainWidgetState extends State<MainWidget> {
   // ];
 
   TimelineModel? selectedModel;
+
+  void getTimeLine(String caseId) async {
+    List<TimelineModel> _events = [];
+
+    var response = await http.post(
+      Uri.parse("http://127.0.0.1/cms/get_events.php"),
+      body: {"case_id": caseId},
+    );
+
+    var _parsedEventData = jsonDecode(response.body);
+
+    for (int i = 0; i < _parsedEventData.length; i++) {
+      var event = _parsedEventData[i];
+      _events.add(
+        TimelineModel(
+          eventId: event["event_id"],
+          caseId: event["case_id"],
+          eventDate: DateTime.parse(event["event_date"]),
+          eventtype: i == _parsedEventData.length - 1 &&
+                  event["event_type"] == "hearing"
+              ? parseEventType("next_hearing")
+              : parseEventType(event["event_type"]),
+          note: event["notes"] != null
+              ? NoteModel(
+                  noteId: event["notes"]["note_id"],
+                  caseId: event["case_id"],
+                  eventId: event["event_id"],
+                  heading: event["notes"]["heading"],
+                  content: event["notes"]["content"],
+                )
+              : null,
+        ),
+      );
+    }
+
+    setState(() {
+      timelineListSample = _events;
+    });
+  }
+
+  @override
+  void initState() {
+    getTimeLine("case12345");
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<PetitionerModel> petitionersList = widget.caseDetail.petitionersList;
