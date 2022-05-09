@@ -38,6 +38,7 @@ dependencies:
   excel: ^2.0.0-null-safety-3
   pdf:
     path: packages/pdf
+  url_launcher: ^6.1.0
 
 dev_dependencies:
   flutter_test:

@@ -19,6 +19,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher_web/url_launcher_web.dart' as url_launcher;
 
 TextStyle commonInfoStyle = const TextStyle(
     color: Colors.black, fontSize: 17, fontWeight: FontWeight.w600);
@@ -130,6 +132,9 @@ class _MainWidgetState extends State<MainWidget> {
   List<PetitionerModel> petitionersList = [];
   List<RespondantModel> respondentList = [];
   CaseModel? caseModel;
+
+  final TextEditingController _shortNoteController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
 
   @override
   void initState() {
@@ -339,7 +344,9 @@ class _MainWidgetState extends State<MainWidget> {
                             ),
                             Expanded(child: Container()),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () async {
+                                await _generatePDF(true);
+                              },
                               child: Container(
                                 width: 160,
                                 height: 40,
@@ -390,7 +397,8 @@ class _MainWidgetState extends State<MainWidget> {
                                                   children: [
                                                     TextButton(
                                                         onPressed: () async {
-                                                          await _generatePDF();
+                                                          await _generatePDF(
+                                                              false);
                                                           Navigator.pop(
                                                               context);
                                                         },
@@ -677,6 +685,7 @@ class _MainWidgetState extends State<MainWidget> {
                                         width: width - 100,
                                         child: TextField(
                                           maxLines: 6,
+                                          controller: _shortNoteController,
                                           decoration: InputDecoration(
                                             hintText: "Add your note here...",
                                             border: OutlineInputBorder(
@@ -741,6 +750,7 @@ class _MainWidgetState extends State<MainWidget> {
                                         height: 340,
                                         width: width - 100,
                                         child: TextField(
+                                          controller: _noteController,
                                           maxLines: 16,
                                           decoration: InputDecoration(
                                             hintText: "Add your note here...",
@@ -758,7 +768,40 @@ class _MainWidgetState extends State<MainWidget> {
                                         ),
                                       ),
                                     ),
-                                  )
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      //TODO:
+                                    },
+                                    child: Container(
+                                      width: 180,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                          color: Color(0xff12294C),
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      alignment: Alignment.center,
+                                      child: Row(
+                                        children: [
+                                          Expanded(child: Container()),
+                                          const Text(
+                                            "Submit",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          const Icon(
+                                            Icons.cloud_download,
+                                            color: Colors.white,
+                                          ),
+                                          Expanded(child: Container()),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -773,7 +816,7 @@ class _MainWidgetState extends State<MainWidget> {
         ]));
   }
 
-  _generatePDF() async {
+  _generatePDF(bool isSharing) async {
     CaseModel model = caseModel!;
     final pdf = pw.Document();
     pw.MemoryImage img = pw.MemoryImage(
@@ -1087,13 +1130,21 @@ class _MainWidgetState extends State<MainWidget> {
       }),
     );
 
-    Uint8List temp = await pdf.save();
-    List<int> intArray = List.from(temp);
-    AnchorElement(
-        href:
-            "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(List.from(intArray))}")
-      ..setAttribute("download", caseModel!.caseId + ".pdf")
-      ..click();
+    if (isSharing) {
+      // Uint8List temp = await pdf.save();
+      // List<int> intArray = List.from(temp);
+      // if (!await launchUrl(Uri.parse(
+      //     "data:application/octet-stream;base64,${base64Encode(List.from(intArray))}")))
+      //   throw 'Could not launch';
+    } else {
+      Uint8List temp = await pdf.save();
+      List<int> intArray = List.from(temp);
+      AnchorElement(
+          href:
+              "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(List.from(intArray))}")
+        ..setAttribute("download", caseModel!.caseId + ".pdf")
+        ..click();
+    }
   }
 
   _generateExcel() {
