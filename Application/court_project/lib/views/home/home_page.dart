@@ -1,4 +1,6 @@
 import 'package:court_project/utils/nav_bar.dart';
+import 'package:court_project/views/case_details/cases_overview.dart';
+import 'package:court_project/views/data_feeding/data_feeding.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,7 +21,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           // Navigation bar of the page.
-          const NavBar(),
+          NavBar(),
           // Body of the page.
           SizedBox(
             height: height,
@@ -144,7 +146,10 @@ class _SearchPaletteState extends State<SearchPalette> {
                 width: width * 0.075,
                 height: height * 0.6,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: ((context) => CaseOverView())));
+                  },
                   style: ButtonStyle(
                     overlayColor: MaterialStateProperty.all(
                       const Color.fromRGBO(218, 223, 231, 1),
@@ -164,7 +169,7 @@ class _SearchPaletteState extends State<SearchPalette> {
                 height: height * 0.6,
                 child: Center(
                   child: Text(
-                    "|",
+                    " | ",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: height * 0.175,
@@ -176,14 +181,17 @@ class _SearchPaletteState extends State<SearchPalette> {
                 width: width * 0.075,
                 height: height * 0.6,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: ((context) => DataFeeding())));
+                  },
                   style: ButtonStyle(
                     overlayColor: MaterialStateProperty.all(
                       const Color.fromRGBO(218, 223, 231, 1),
                     ),
                   ),
                   child: Text(
-                    "Hearing Details",
+                    "Data Feeding",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,

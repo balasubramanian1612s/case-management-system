@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:html';
+import 'dart:typed_data';
 
 import 'package:court_project/models/case_lookup.dart';
 import 'package:court_project/models/complete_case_model.dart';
@@ -7,10 +9,13 @@ import 'package:court_project/models/respondent_model.dart';
 import 'package:court_project/utils/nav_bar.dart';
 import 'package:court_project/utils/responsive.dart';
 import 'package:court_project/views/case_details/case_detail.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 import '../../models/case_model.dart';
 
 PetitionerModel convertPetToObject(dynamic json) {
@@ -133,29 +138,25 @@ class _CaseOverViewState extends State<CaseOverView> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    final sidebarDecoration = BoxDecoration(
+    const sidebarDecoration = BoxDecoration(
         gradient: LinearGradient(
             colors: [Color(0xff00B4DB), Color(0xff0083B0)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter));
 
     return Scaffold(
-        floatingActionButton: FloatingActionButton(onPressed: () async {
-          List<CompleteCaseModel> res = await getCases();
-          debugPrint(res.length.toString());
-        }),
         body: Responsive(
-          mobile: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Container(
-              width: 1100,
-              child: MainWidget(
-                isMobile: true,
-              ),
-            ),
+      mobile: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Container(
+          width: 1100,
+          child: MainWidget(
+            isMobile: true,
           ),
-          desktop: MainWidget(),
-        ));
+        ),
+      ),
+      desktop: MainWidget(),
+    ));
   }
 }
 
@@ -207,6 +208,7 @@ class _MainWidgetState extends State<MainWidget> {
                 NavBar(),
                 ToolBar(
                   isMobile: widget.isMobile,
+                  casesList: _completeCaseList,
                 ),
                 Container(
                   height: height * 0.8,
@@ -265,15 +267,15 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
               child: Container(
                 height: 60,
                 decoration: BoxDecoration(
-                    color: Color(0xff12294C),
+                    color: const Color(0xff12294C),
                     borderRadius: BorderRadius.circular(8)),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
                       Text(
                         "Case ID: " + widget.item.caseId,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20,
                             fontWeight: FontWeight.w200),
@@ -283,7 +285,7 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                         "Hearing Date: " +
                             DateFormat('dd-MM-yyyy')
                                 .format(widget.item.hearingDate),
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20,
                             fontWeight: FontWeight.w200),
@@ -307,7 +309,7 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                     },
                     child: Container(
                       height: 60,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: Color(0xff12294C),
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(8),
@@ -318,7 +320,7 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                           children: [
                             Text(
                               "Case ID: " + widget.item.caseId,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w200),
@@ -328,7 +330,7 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                               "Hearing Date: " +
                                   DateFormat('dd-MM-yyyy')
                                       .format(widget.item.hearingDate),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w200),
@@ -340,17 +342,17 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                   ),
                   Container(
                     height: 290,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         color: Color(0xffDADFE7),
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(8),
                             bottomRight: Radius.circular(8))),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Row(
@@ -359,7 +361,7 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                                 width: width * 0.45,
                                 child: Text(
                                   "Petitioner Name: " + widget.item.petName,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600),
@@ -369,7 +371,7 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                                 width: width * 0.45,
                                 child: Text(
                                   "Respondent Name: " + widget.item.resName,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600),
@@ -377,7 +379,7 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Row(
@@ -386,7 +388,7 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                                 width: width * 0.45,
                                 child: Text(
                                   "Case Type: " + widget.item.caseType.name,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600),
@@ -398,7 +400,7 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                                   "Filing Date: " +
                                       DateFormat('dd-MM-yyyy')
                                           .format(widget.item.filingDate),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600),
@@ -406,32 +408,32 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Container(
                             child: Text(
                               "Case Age: " + widget.item.caseAge.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Container(
                             child: Text(
                               "Case Description: " +
                                   widget.item.caseDescription,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 40,
                           ),
                           Row(
@@ -447,15 +449,15 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                                 child: Row(
                                   children: [
                                     Expanded(child: Container()),
-                                    Text(
+                                    const Text(
                                       "Document",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 20),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 10,
                                     ),
-                                    Icon(
+                                    const Icon(
                                       Icons.add,
                                       color: Colors.white,
                                     ),
@@ -463,7 +465,7 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                                   ],
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 20,
                               ),
                               GestureDetector(
@@ -495,7 +497,7 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
                                                             horizontal: 10),
                                                     child: Row(
                                                       children: [
-                                                        Text(
+                                                        const Text(
                                                           'Notes',
                                                           style: TextStyle(
                                                               color:
@@ -656,7 +658,8 @@ class _CaseLookupTileState extends State<CaseLookupTile> {
 
 class ToolBar extends StatefulWidget {
   bool? isMobile;
-  ToolBar({this.isMobile = false});
+  List<CompleteCaseModel> casesList;
+  ToolBar({this.isMobile = false, required this.casesList});
 
   @override
   State<ToolBar> createState() => _ToolBarState();
@@ -726,33 +729,459 @@ class _ToolBarState extends State<ToolBar> {
           SizedBox(
             width: width * 0.02,
           ),
-          Container(
-            width: width * 0.25,
-            height: 40,
-            decoration: BoxDecoration(
-                color: Color(0xff12294C),
-                borderRadius: BorderRadius.circular(5)),
-            alignment: Alignment.center,
-            child: Row(
-              children: [
-                Expanded(child: Container()),
-                Text(
-                  "Download",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-                SizedBox(
-                  width: width * 0.02,
-                ),
-                Icon(
-                  Icons.cloud_download_sharp,
-                  color: Colors.white,
-                ),
-                Expanded(child: Container()),
-              ],
+          GestureDetector(
+            onTap: () async {
+              showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (context) => Dialog(
+                        child: Container(
+                            height: 200,
+                            width: 200,
+                            alignment: Alignment.center,
+                            child: Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                      onPressed: () async {
+                                        await _generatePDF();
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text("As PDF")),
+                                  TextButton(
+                                      onPressed: () async {
+                                        await _generateExcel();
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text("As Excel")),
+                                ],
+                              ),
+                            )),
+                      ));
+            },
+            child: Container(
+              width: width * 0.25,
+              height: 40,
+              decoration: BoxDecoration(
+                  color: Color(0xff12294C),
+                  borderRadius: BorderRadius.circular(5)),
+              alignment: Alignment.center,
+              child: Row(
+                children: [
+                  Expanded(child: Container()),
+                  Text(
+                    "Download",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                  SizedBox(
+                    width: width * 0.02,
+                  ),
+                  Icon(
+                    Icons.cloud_download_sharp,
+                    color: Colors.white,
+                  ),
+                  Expanded(child: Container()),
+                ],
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  _generateExcel() {
+    var excel =
+        Excel.createExcel(); // automatically creates 1 empty sheet: Sheet1
+    Sheet sheetObject = excel['Sheet1'];
+    int startValue = 1;
+    int snoValue = 1;
+    widget.casesList.forEach((element) {
+      sheetObject.merge(CellIndex.indexByString('A' + startValue.toString()),
+          CellIndex.indexByString('A' + (startValue + 6).toString()),
+          customValue: "S.no." + snoValue.toString());
+      CellStyle cellStyle = CellStyle(verticalAlign: VerticalAlign.Center);
+      var cell = sheetObject
+          .cell(CellIndex.indexByString("A" + startValue.toString()));
+      cell.cellStyle = cellStyle;
+      sheetObject
+          .cell(CellIndex.indexByString("B" + (startValue).toString()))
+          .value = "Diary Number";
+      sheetObject
+          .cell(CellIndex.indexByString("C" + (startValue).toString()))
+          .value = element.caseModel.diaryNo;
+      sheetObject
+          .cell(CellIndex.indexByString("B" + (startValue + 1).toString()))
+          .value = "Case Number";
+      sheetObject
+          .cell(CellIndex.indexByString("C" + (startValue + 1).toString()))
+          .value = element.caseModel.caseId;
+      sheetObject
+          .cell(CellIndex.indexByString("B" + (startValue + 2).toString()))
+          .value = "Petitioner Name";
+      sheetObject
+              .cell(CellIndex.indexByString("C" + (startValue + 2).toString()))
+              .value =
+          element.petitionersList.isEmpty
+              ? "Not Available"
+              : element.petitionersList[0].name;
+      sheetObject
+          .cell(CellIndex.indexByString("B" + (startValue + 3).toString()))
+          .value = "Respondent Name";
+      sheetObject
+              .cell(CellIndex.indexByString("C" + (startValue + 3).toString()))
+              .value =
+          element.respondantList.isEmpty
+              ? "Not Available"
+              : element.respondantList[0].name;
+      sheetObject
+          .cell(CellIndex.indexByString("B" + (startValue + 4).toString()))
+          .value = "Petitioner's Advocate";
+      sheetObject
+          .cell(CellIndex.indexByString("C" + (startValue + 4).toString()))
+          .value = element.caseModel.petAdv;
+      sheetObject
+          .cell(CellIndex.indexByString("B" + (startValue + 5).toString()))
+          .value = "Respondent's Advocate";
+      sheetObject
+          .cell(CellIndex.indexByString("C" + (startValue + 5).toString()))
+          .value = element.caseModel.resAdv;
+      sheetObject
+          .cell(CellIndex.indexByString("B" + (startValue + 6).toString()))
+          .value = "Judgment By";
+      sheetObject
+          .cell(CellIndex.indexByString("C" + (startValue + 6).toString()))
+          .value = element.caseModel.judgementBy;
+      startValue += 7;
+      snoValue += 1;
+    });
+    excel.save(fileName: "CasesOverview.xlsx");
+  }
+
+  _generatePDF() async {
+    final pdf = pw.Document();
+    pw.MemoryImage img = pw.MemoryImage(
+      (await rootBundle.load('assets/logo.png')).buffer.asUint8List(),
+    );
+    widget.casesList.forEach((element) {
+      pdf.addPage(
+        pw.MultiPage(header: ((pw.Context context) {
+          return pw.Column(children: [
+            pw.Row(children: [
+              pw.Text(
+                "DISTRICT COURT  TIRUPUR",
+                style:
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 18),
+              ),
+              pw.Expanded(child: pw.Container()),
+              pw.Image(img, height: 40, width: 40)
+            ]),
+            pw.Divider()
+          ]);
+        }), build: (pw.Context context) {
+          return [
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  "Case Number: " + element.caseModel.caseId,
+                  style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold,
+                      fontSize: 18,
+                      color: PdfColors.green800),
+                ),
+                pw.SizedBox(
+                  height: 10,
+                ),
+                pw.Text(
+                  "Case Details",
+                  style: pw.TextStyle(fontSize: 16, color: PdfColors.brown),
+                ),
+                pw.SizedBox(
+                  height: 10,
+                ),
+                pw.Container(
+                  child: pw.Text(
+                    "Case Number: " + element.caseModel.caseId,
+                    style: pwcommonInfoStyle,
+                  ),
+                ),
+                pw.Container(
+                  child: pw.Text(
+                    "Petitioner Advocate: " + element.caseModel.petAdv,
+                    style: pwcommonInfoStyle,
+                  ),
+                ),
+                pw.Container(
+                  child: pw.Text(
+                    "Diary Number: " + element.caseModel.diaryNo.toString(),
+                    style: pwcommonInfoStyle,
+                  ),
+                ),
+                pw.Container(
+                  child: pw.Text(
+                    "Respondent Advocate: " + element.caseModel.resAdv,
+                    style: pwcommonInfoStyle,
+                  ),
+                ),
+                pw.Container(
+                  child: pw.Text(
+                    "Next Hearing: " + element.caseModel.nextHearing,
+                    style: pwcommonInfoStyle,
+                  ),
+                ),
+                pw.Container(
+                  child: pw.Text(
+                    "Filing Date: " + element.caseModel.filing,
+                    style: pwcommonInfoStyle,
+                  ),
+                ),
+                pw.Container(
+                  child: pw.Text(
+                    "Judgement By: " + element.caseModel.judgementBy,
+                    style: pwcommonInfoStyle,
+                  ),
+                ),
+                pw.Container(
+                  child: pw.Text(
+                    "Case Age: " + element.caseModel.age.toString(),
+                    style: pwcommonInfoStyle,
+                  ),
+                ),
+                pw.Container(
+                  child: pw.Text(
+                    "Status: " + element.caseModel.status,
+                    style: pwcommonInfoStyle,
+                  ),
+                ),
+              ],
+            ),
+            pw.SizedBox(
+              height: 10,
+            ),
+            ...element.petitionersList
+                .map<pw.Widget>((ele) => pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          "Petitioner Details",
+                          style: pw.TextStyle(
+                              fontSize: 16, color: PdfColors.brown),
+                        ),
+                        pw.SizedBox(
+                          height: 10,
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Name: " + ele.name,
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Individual/Dept: " + ele.inddep.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Father/Husband Name: " + ele.fhName,
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Relation: " + ele.relation.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Age: " + ele.age.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Gender: " + ele.gender.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Occupation: " + ele.occupation.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Caste: " + ele.caste.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Address: " +
+                                ele.address +
+                                ", " +
+                                ele.city +
+                                ", " +
+                                ele.district +
+                                ", " +
+                                ele.state +
+                                ", " +
+                                ele.pinCode.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Education Qualification: " + ele.edu.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Mobile Number: " + ele.mobile.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Email: " + ele.email.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Status: " + ele.status.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ))
+                .toList(),
+            ...element.respondantList
+                .map<pw.Widget>((ele) => pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          "Respondant Details",
+                          style: pw.TextStyle(
+                              fontSize: 16, color: PdfColors.brown),
+                        ),
+                        pw.SizedBox(
+                          height: 10,
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Name: " + ele.name,
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Individual/Dept: " + ele.inddep.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Father/Husband Name: " + ele.fhName,
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Relation: " + ele.relation.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Age: " + ele.age.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Gender: " + ele.gender.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Occupation: " + ele.occupation.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Caste: " + ele.caste.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Address: " +
+                                ele.address +
+                                ", " +
+                                ele.city +
+                                ", " +
+                                ele.district +
+                                ", " +
+                                ele.state +
+                                ", " +
+                                ele.pinCode.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Education Qualification: " + ele.edu.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Mobile Number: " + ele.mobile.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Email: " + ele.email.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.Container(
+                          child: pw.Text(
+                            "Status: " + ele.status.toString(),
+                            style: pwcommonInfoStyle,
+                          ),
+                        ),
+                        pw.SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ))
+                .toList(),
+          ];
+        }),
+      );
+    });
+
+    Uint8List temp = await pdf.save();
+    List<int> intArray = List.from(temp);
+    AnchorElement(
+        href:
+            "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(List.from(intArray))}")
+      ..setAttribute("download", "CasesOverview.pdf")
+      ..click();
   }
 }

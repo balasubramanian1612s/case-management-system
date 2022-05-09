@@ -1,4 +1,6 @@
 import 'package:court_project/utils/platform_aware_asset_image.dart';
+import 'package:court_project/views/home/home_page.dart';
+import 'package:court_project/views/login_page/login_page.dart';
 import 'package:flutter/material.dart';
 
 class NavBar extends StatelessWidget {
@@ -54,7 +56,12 @@ class NavBar extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: ((context) => const HomePage())),
+                            (route) => false);
+                      },
                       child: const Text(
                         "Home",
                         style: TextStyle(
@@ -78,7 +85,10 @@ class NavBar extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: ((context) => const LoginPage())));
+                      },
                       child: const Text(
                         "Register/Login",
                         style: TextStyle(
