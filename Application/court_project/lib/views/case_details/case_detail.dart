@@ -43,6 +43,44 @@ eventType parseEventType(String type) {
   }
 }
 
+void updateCaseStatus(String caseId, String nextHearing, String eventId,
+    String content, String heading, BuildContext context) async {
+  var response = await http.post(
+    Uri.parse("http://127.0.0.1/cms/add_hearing.php"),
+    body: {
+      "case_id": caseId,
+      "next_hearing": nextHearing,
+      "event_id": eventId,
+      "content": content,
+      "heading": heading,
+    },
+  );
+
+  var _parsedResponse = jsonDecode(response.body);
+
+  if (_parsedResponse["success"] == true) {
+    showDialog(
+      context: context,
+      builder: (_) => const AlertDialog(
+        title: Text("Success."),
+        content: Text(
+          "Operation successful.",
+        ),
+      ),
+    );
+  } else {
+    showDialog(
+      context: context,
+      builder: (_) => const AlertDialog(
+        title: Text("The new hearing was added successfully."),
+        content: Text(
+          "Something went wrong. Please try again.",
+        ),
+      ),
+    );
+  }
+}
+
 class CaseDetail extends StatefulWidget {
   final CompleteCaseModel caseDetail;
   const CaseDetail({Key? key, required this.caseDetail}) : super(key: key);
@@ -141,7 +179,7 @@ class _MainWidgetState extends State<MainWidget> {
     petitionersList = widget.caseDetail.petitionersList;
     respondentList = widget.caseDetail.respondantList;
     caseModel = widget.caseDetail.caseModel;
-    getTimeLine("case12345");
+    getTimeLine(caseModel!.caseId);
     super.initState();
   }
 
@@ -170,8 +208,12 @@ class _MainWidgetState extends State<MainWidget> {
                 Expanded(child: Container()),
                 GestureDetector(
                   onTap: () {
+                    List<TimelineModel> nextHearing = timelineListSample
+                        .where((element) =>
+                            element.eventtype == eventType.nextHearing)
+                        .toList();
                     AlertDialog alert = AlertDialog(
-                      title: Text("22/04/2020"),
+                      title: Text(nextHearing[0].eventDate.toString()),
                       content: Text(
                           "Please verify the date you are updating the status."),
                       actions: [
@@ -619,7 +661,8 @@ class _MainWidgetState extends State<MainWidget> {
                                         context: context,
                                         initialDate: DateTime.now(),
                                         firstDate: DateTime(2019, 1),
-                                        lastDate: DateTime.now(),
+                                        lastDate: DateTime.now()
+                                            .add(Duration(days: 100)),
                                         builder: (context, picker) {
                                           return Theme(
                                             data: ThemeData.dark().copyWith(
@@ -769,45 +812,56 @@ class _MainWidgetState extends State<MainWidget> {
                                       ),
                                     ),
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      //TODO:
-                                    },
-                                    child: Container(
-                                      width: 180,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                          color: Color(0xff12294C),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      alignment: Alignment.center,
-                                      child: Row(
-                                        children: [
-                                          Expanded(child: Container()),
-                                          const Text(
-                                            "Submit",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          const Icon(
-                                            Icons.cloud_download,
-                                            color: Colors.white,
-                                          ),
-                                          Expanded(child: Container()),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
                                 ],
                               ),
                             ),
                             decoration: BoxDecoration(
                               color: Color(0xffE9F0FA),
                               borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              List<TimelineModel> nextHearing =
+                                  timelineListSample
+                                      .where((element) =>
+                                          element.eventtype ==
+                                          eventType.nextHearing)
+                                      .toList();
+                              print(nextHearing.first.eventId);
+                              updateCaseStatus(
+                                  caseModel!.caseId,
+                                  hearingDateController.text,
+                                  nextHearing[0].eventId,
+                                  _noteController.text,
+                                  _shortNoteController.text,
+                                  context);
+                            },
+                            child: Container(
+                              width: 180,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: Color(0xff12294C),
+                                  borderRadius: BorderRadius.circular(5)),
+                              alignment: Alignment.center,
+                              child: Row(
+                                children: [
+                                  Expanded(child: Container()),
+                                  const Text(
+                                    "Submit",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Icon(
+                                    Icons.cloud_download,
+                                    color: Colors.white,
+                                  ),
+                                  Expanded(child: Container()),
+                                ],
+                              ),
                             ),
                           ),
                         ],
